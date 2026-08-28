@@ -589,6 +589,9 @@
     }
 
     .monthly-summary-table td:first-child .cell-limit {
+      display: block;
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
       overflow: visible;
       text-overflow: clip;
       white-space: normal;
@@ -759,7 +762,70 @@
     }
 
     #stockEditTable table {
-      min-width: 1180px;
+      min-width: 1502px;
+    }
+
+    #stockEditTable th:nth-child(1),
+    #stockEditTable td:nth-child(1) {
+      width: 152px;
+    }
+
+    #stockEditTable th:nth-child(2),
+    #stockEditTable td:nth-child(2) {
+      width: 230px;
+    }
+
+    #stockEditTable th:nth-child(3),
+    #stockEditTable td:nth-child(3) {
+      width: 78px;
+    }
+
+    #stockEditTable th:nth-child(4),
+    #stockEditTable td:nth-child(4) {
+      width: 104px;
+    }
+
+    #stockEditTable th:nth-child(5),
+    #stockEditTable td:nth-child(5) {
+      width: 92px;
+    }
+
+    #stockEditTable th:nth-child(6),
+    #stockEditTable td:nth-child(6) {
+      width: 112px;
+    }
+
+    #stockEditTable th:nth-child(7),
+    #stockEditTable td:nth-child(7),
+    #stockEditTable th:nth-child(8),
+    #stockEditTable td:nth-child(8) {
+      width: 72px;
+    }
+
+    #stockEditTable th:nth-child(9),
+    #stockEditTable td:nth-child(9) {
+      width: 96px;
+    }
+
+    #stockEditTable th:nth-child(10),
+    #stockEditTable td:nth-child(10) {
+      width: 112px;
+    }
+
+    #stockEditTable th:nth-child(11),
+    #stockEditTable td:nth-child(11) {
+      width: 110px;
+    }
+
+    #stockEditTable th:nth-child(12),
+    #stockEditTable td:nth-child(12) {
+      width: 160px;
+    }
+
+    #stockEditTable th:nth-child(13),
+    #stockEditTable td:nth-child(13) {
+      width: 112px;
+      text-align: center;
     }
 
     .manage-table {
@@ -775,7 +841,7 @@
     }
 
     #materialTable table {
-      min-width: 1120px;
+      min-width: 1316px;
     }
 
     #categoryTable th:nth-child(1),
@@ -838,7 +904,8 @@
 
     .manage-table th,
     .manage-table td {
-      padding: 9px 10px;
+      padding: 10px 12px;
+      vertical-align: middle;
     }
 
     .manage-table .row-actions {
@@ -1378,11 +1445,17 @@
     }
 
     .cell-limit {
-      display: block;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.4;
     }
 
     .status {
