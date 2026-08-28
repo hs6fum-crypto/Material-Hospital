@@ -661,8 +661,13 @@
       max-height: min(58vh, 560px);
     }
 
-    #materialTable {
+    #materialTable,
+    #stockEditTable {
       max-height: min(60vh, 620px);
+    }
+
+    #stockEditTable table {
+      min-width: 1180px;
     }
 
     .manage-table {
@@ -1148,6 +1153,18 @@
       grid-column: span 2;
     }
 
+    #stockEditForm {
+      grid-template-columns: repeat(6, minmax(108px, 1fr));
+    }
+
+    #stockEditForm .field {
+      min-width: 0;
+    }
+
+    #stockEditForm .wide {
+      grid-column: span 3;
+    }
+
     .add-actions {
       display: grid;
       align-items: end;
@@ -1183,6 +1200,10 @@
 
     .search-strip .field {
       min-width: 0;
+    }
+
+    .stock-edit-strip {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 240px) auto;
     }
 
     .cell-limit {
@@ -1465,10 +1486,11 @@
         <button type="button" data-view="overview"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
         <button type="button" data-view="executive"><i data-lucide="briefcase-business"></i><span>วิเคราะห์สำหรับผู้บริหาร</span></button>
         <button type="button" data-view="manage"><i data-lucide="package-plus"></i><span>เพิ่ม/ลบ รายการวัสดุ</span></button>
+        <button type="button" data-view="stockedit"><i data-lucide="clipboard-pen-line"></i><span>เพิ่ม/ลบ วัสดุคงคลัง</span></button>
+        <button type="button" data-view="stock"><i data-lucide="warehouse"></i><span>Stock วัสดุคงคลัง</span></button>
         <button type="button" data-view="survey"><i data-lucide="clipboard-list"></i><span>แบบสำรวจรายปี</span></button>
         <button type="button" data-view="requisition"><i data-lucide="file-pen-line"></i><span>การเบิกวัสดุ</span></button>
         <button type="button" data-view="issue"><i data-lucide="package-minus"></i><span>ตัดจ่ายวัสดุ</span></button>
-        <button type="button" data-view="stock"><i data-lucide="warehouse"></i><span>Stock วัสดุคงคลัง</span></button>
         <button type="button" data-view="usage"><i data-lucide="calculator"></i><span>อัตราการใช้</span></button>
         <button type="button" data-view="value"><i data-lucide="circle-dollar-sign"></i><span>สรุปมูลค่า</span></button>
         <button type="button" data-view="charts"><i data-lucide="bar-chart-3"></i><span>กราฟสรุป</span></button>
@@ -1743,6 +1765,106 @@
               <h3>เคลื่อนไหวคลังล่าสุด</h3>
             </div>
             <div class="table-wrap" id="stockMovementTable"></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-stockedit">
+          <div class="grid four" id="stockEditMetricGrid"></div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3 id="stockEditFormTitle">เพิ่มวัสดุคงคลัง</h3>
+              <div class="panel-actions">
+                <button type="button" class="btn secondary" data-action="clear-stock-edit"><i data-lucide="eraser"></i><span>ล้างฟอร์ม</span></button>
+              </div>
+            </div>
+            <form id="stockEditForm" class="compact-form">
+              <input type="hidden" id="stockEditId">
+              <div class="field wide">
+                <label for="stockEditCategory">หมวดวัสดุ</label>
+                <select id="stockEditCategory" required></select>
+              </div>
+              <div class="field wide">
+                <label for="stockEditName">รายการวัสดุ</label>
+                <input id="stockEditName" type="text" required>
+              </div>
+              <div class="field">
+                <label for="stockEditUnit">หน่วยนับ</label>
+                <input id="stockEditUnit" type="text">
+              </div>
+              <div class="field">
+                <label for="stockEditPrice">ราคา/หน่วย</label>
+                <input id="stockEditPrice" type="number" min="0" step="0.01">
+              </div>
+              <div class="field">
+                <label for="stockEditStock">คงเหลือ</label>
+                <input id="stockEditStock" type="number" min="0" step="1">
+              </div>
+              <div class="field">
+                <label for="stockEditReorderPoint">จุดสั่งซื้อ</label>
+                <input id="stockEditReorderPoint" type="number" min="0" step="1">
+              </div>
+              <div class="field">
+                <label for="stockEditMinStock">Min Stock</label>
+                <input id="stockEditMinStock" type="number" min="0" step="1">
+              </div>
+              <div class="field">
+                <label for="stockEditMaxStock">Max Stock</label>
+                <input id="stockEditMaxStock" type="number" min="0" step="1">
+              </div>
+              <div class="field">
+                <label for="stockEditLot">Lot Number</label>
+                <input id="stockEditLot" type="text">
+              </div>
+              <div class="field">
+                <label for="stockEditExpireDate">วันหมดอายุ</label>
+                <input id="stockEditExpireDate" type="date">
+              </div>
+              <div class="field">
+                <label for="stockEditBarcode">Barcode / QR</label>
+                <input id="stockEditBarcode" type="text">
+              </div>
+              <div class="field">
+                <label for="stockEditSupplier">Supplier</label>
+                <input id="stockEditSupplier" type="text">
+              </div>
+              <div class="field">
+                <label for="stockEditCompany">บริษัท</label>
+                <input id="stockEditCompany" type="text">
+              </div>
+              <div class="field">
+                <label for="stockEditVedClass">VED</label>
+                <select id="stockEditVedClass">
+                  <option value="">อัตโนมัติ</option>
+                  <option value="V">V - สำคัญมาก</option>
+                  <option value="E">E - จำเป็น</option>
+                  <option value="D">D - ทั่วไป</option>
+                </select>
+              </div>
+              <div class="add-actions">
+                <button type="submit" class="btn green"><i data-lucide="save"></i><span id="stockEditSubmitLabel">เพิ่ม</span></button>
+              </div>
+            </form>
+            <div class="delete-strip">
+              <button type="button" class="btn coral" data-action="delete-stock-edit-current"><i data-lucide="trash-2"></i><span>ลบรายการที่เลือก</span></button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>รายการวัสดุคงคลัง</h3>
+            </div>
+            <div class="search-strip stock-edit-strip">
+              <div class="field">
+                <label for="stockEditSearch">ค้นหา</label>
+                <input id="stockEditSearch" type="search" placeholder="พิมพ์ชื่อรายการ หน่วยนับ Lot หรือ Supplier">
+              </div>
+              <div class="field">
+                <label for="stockEditFilterCategory">หมวดวัสดุ</label>
+                <select id="stockEditFilterCategory"></select>
+              </div>
+              <button type="button" class="btn secondary" data-action="search-stock-edit"><i data-lucide="search"></i><span>ค้นหา</span></button>
+            </div>
+            <div class="table-wrap manage-table" id="stockEditTable"></div>
           </div>
         </section>
 
@@ -2226,10 +2348,11 @@
       overview: ['Dashboard', ''],
       executive: ['วิเคราะห์สำหรับผู้บริหาร', ''],
       manage: ['เพิ่ม/ลบ รายการวัสดุ', ''],
+      stockedit: ['เพิ่ม/ลบ วัสดุคงคลัง', ''],
+      stock: ['Stock วัสดุคงคลัง', ''],
       survey: ['แบบสำรวจพัสดุรายปี', ''],
       requisition: ['การเบิกวัสดุ', ''],
       issue: ['ตัดจ่ายวัสดุ', ''],
-      stock: ['Stock วัสดุคงคลัง', ''],
       usage: ['อัตราการใช้', ''],
       value: ['สรุปมูลค่า', ''],
       charts: ['กราฟสรุป', ''],
@@ -2261,6 +2384,8 @@
         if (button.dataset.deleteCat) deleteCategory(button.dataset.deleteCat);
         if (button.dataset.editMat) editMaterial(button.dataset.editMat);
         if (button.dataset.deleteMat) deleteMaterial(button.dataset.deleteMat);
+        if (button.dataset.editStockMat) editStockMaterial(button.dataset.editStockMat);
+        if (button.dataset.deleteStockMat) deleteStockMaterial(button.dataset.deleteStockMat);
         if (button.dataset.removeLine) removeRequisitionLine(Number(button.dataset.removeLine));
         if (button.dataset.editIssueLine) editIssueLine(Number(button.dataset.editIssueLine));
         if (button.dataset.removeIssueLine) removeIssueLine(Number(button.dataset.removeIssueLine));
@@ -2290,11 +2415,17 @@
         if (['surveyYear', 'surveyCategory'].includes(event.target.id)) {
           renderSurveyCompletionSummary();
         }
+        if (event.target.id === 'stockEditFilterCategory') {
+          renderStockEdit();
+        }
       });
 
       document.body.addEventListener('input', event => {
         if (['categorySearch', 'materialSearch'].includes(event.target.id)) {
           renderManage();
+        }
+        if (event.target.id === 'stockEditSearch') {
+          renderStockEdit();
         }
         if (event.target.id === 'requesterName') {
           syncRequester();
@@ -2311,6 +2442,10 @@
       document.getElementById('materialForm').addEventListener('submit', event => {
         event.preventDefault();
         saveMaterialForm();
+      });
+      document.getElementById('stockEditForm').addEventListener('submit', event => {
+        event.preventDefault();
+        saveStockEditForm();
       });
       document.getElementById('authForm').addEventListener('submit', event => {
         event.preventDefault();
@@ -4666,6 +4801,8 @@
       setOptions('filterCategory', [{ value: ALL_CATEGORIES, label: 'ทุกประเภท' }].concat(categoryOptions), rawValueOf('filterCategory') || ALL_CATEGORIES, { preferAll: true });
       setOptions('filterGroup', [{ value: ALL_GROUPS, label: 'ทุกกลุ่มงาน' }].concat(groupOptions), rawValueOf('filterGroup') || ALL_GROUPS, { preferAll: true });
       setOptions('materialCategory', categoryOptions, valueOf('materialCategory') || (data.categories[0] && data.categories[0].categoryId), { preferFirst: true });
+      setOptions('stockEditCategory', categoryOptions, valueOf('stockEditCategory') || (data.categories[0] && data.categories[0].categoryId), { preferFirst: true });
+      setOptions('stockEditFilterCategory', [{ value: ALL_CATEGORIES, label: 'ทุกหมวดวัสดุ' }].concat(categoryOptions), rawValueOf('stockEditFilterCategory') || ALL_CATEGORIES, { preferAll: true });
       setOptions('surveyCategory', [{ value: ALL_CATEGORIES, label: 'ทุกหมวดวัสดุ' }].concat(categoryOptions), rawValueOf('surveyCategory') || rawValueOf('filterCategory') || ALL_CATEGORIES, { preferAll: true });
       setOptions('surveyGroup', groupOptions, valueOf('surveyGroup') || valueOf('filterGroup') || (data.groups[0] && data.groups[0].groupName), { preferFirst: true });
       setOptions('requesterGroup', requisitionGroupOptions, valueOf('requesterGroup') || (selectedRequester && selectedRequester.groupName), { preferFirst: true });
@@ -4908,6 +5045,7 @@
       renderSurveyCompletionSummary();
       renderSurveySaveResult();
       renderStock();
+      renderStockEdit();
       renderIssueLines();
       renderIssueResult();
       renderIssueGroupCategorySummary();
@@ -4931,7 +5069,7 @@
       document.getElementById('viewTitle').textContent = meta[0];
       document.getElementById('viewSubtitle').textContent = '';
       const topbar = document.querySelector('.topbar');
-      if (topbar) topbar.classList.toggle('hide-filters', ['manage', 'survey', 'issue', 'requisition'].includes(state.view));
+      if (topbar) topbar.classList.toggle('hide-filters', ['manage', 'stockedit', 'survey', 'issue', 'requisition'].includes(state.view));
       if (!silent) drawChartsWhenReady();
       refreshIcons();
     }
@@ -5221,6 +5359,170 @@
         clipText(row.supplierName || row.companyName || ''),
         rowActions('editMat', row.materialId, 'deleteMat', row.materialId)
       ], [3, 4, 5, 6])) : empty(materialSearch ? 'ไม่พบรายการวัสดุตามคำค้น' : 'ไม่มีข้อมูลรายการวัสดุ');
+    }
+
+    function stockEditRows() {
+      if (!state.data) return [];
+      const categoryId = valueOf('stockEditFilterCategory');
+      const query = searchText(valueOf('stockEditSearch'));
+      return state.data.materials
+        .filter(row => !categoryId || cleanLocalText(row.categoryId) === categoryId)
+        .filter(row => matchesSearch(row, query, ['categoryName', 'itemName', 'unit', 'lotNumber', 'barcode', 'supplierName', 'companyName']));
+    }
+
+    function renderStockEdit() {
+      if (!state.data) return;
+      const rows = stockEditRows();
+      const totalQty = rows.reduce((sum, row) => sum + toNumber(row.stockBalance), 0);
+      const totalValue = rows.reduce((sum, row) => sum + toNumber(row.stockBalance) * toNumber(row.unitPrice), 0);
+      const reorderCount = rows.filter(row => {
+        const point = toNumber(row.reorderPoint) || toNumber(row.minStock);
+        return point > 0 && toNumber(row.stockBalance) <= point;
+      }).length;
+      const metricGrid = document.getElementById('stockEditMetricGrid');
+      if (metricGrid) {
+        metricGrid.innerHTML = [
+          metric('package', rows.length, 'รายการที่แสดง', ''),
+          metric('warehouse', totalQty, 'จำนวนคงเหลือรวม', 'green'),
+          metric('wallet', totalValue, 'มูลค่าคงคลัง', 'amber', true),
+          metric('triangle-alert', reorderCount, 'ถึงจุดสั่งซื้อ', 'coral')
+        ].join('');
+      }
+
+      const query = valueOf('stockEditSearch');
+      const selectedId = valueOf('stockEditId');
+      document.getElementById('stockEditTable').innerHTML = rows.length
+        ? table(['หมวดวัสดุ', 'รายการ', 'หน่วย', 'ราคา/หน่วย', 'คงเหลือ', 'มูลค่า', 'Min', 'Max', 'จุดสั่งซื้อ', 'Lot', 'หมดอายุ', 'Supplier', ''], rows.map(row => [
+          clipText(row.categoryName),
+          selectedId && row.materialId === selectedId
+            ? `<span class="cell-limit" title="${escapeHtml(row.itemName || '')}"><strong>${escapeHtml(row.itemName || '')}</strong></span>`
+            : clipText(row.itemName),
+          clipText(row.unit || ''),
+          formatMoney(row.unitPrice),
+          formatNumber(row.stockBalance),
+          formatMoney(toNumber(row.stockBalance) * toNumber(row.unitPrice)),
+          formatNumber(row.minStock),
+          formatNumber(row.maxStock),
+          formatNumber(row.reorderPoint),
+          clipText(row.lotNumber || ''),
+          clipText(normalizeLocalDateInput(row.expireDate)),
+          clipText(row.supplierName || row.companyName || ''),
+          rowActions('editStockMat', row.materialId, 'deleteStockMat', row.materialId)
+        ], [3, 4, 5, 6, 7, 8]))
+        : empty(query ? 'ไม่พบวัสดุคงคลังตามคำค้น' : 'ไม่มีข้อมูลวัสดุคงคลัง');
+    }
+
+    function updateStockEditFormMode() {
+      const editing = Boolean(valueOf('stockEditId'));
+      const title = document.getElementById('stockEditFormTitle');
+      const label = document.getElementById('stockEditSubmitLabel');
+      if (title) title.textContent = editing ? 'แก้ไขวัสดุคงคลัง' : 'เพิ่มวัสดุคงคลัง';
+      if (label) label.textContent = editing ? 'บันทึกการแก้ไข' : 'เพิ่ม';
+    }
+
+    function editStockMaterial(materialId) {
+      const row = state.data.materials.find(item => item.materialId === materialId);
+      if (!row) return;
+      setValue('stockEditId', row.materialId);
+      setValue('stockEditCategory', row.categoryId);
+      setValue('stockEditName', row.itemName || '');
+      setValue('stockEditUnit', row.unit || '');
+      setValue('stockEditPrice', row.unitPrice || '');
+      setValue('stockEditStock', row.stockBalance || '');
+      setValue('stockEditReorderPoint', row.reorderPoint || '');
+      setValue('stockEditMinStock', row.minStock || '');
+      setValue('stockEditMaxStock', row.maxStock || '');
+      setValue('stockEditLot', row.lotNumber || '');
+      setValue('stockEditExpireDate', normalizeLocalDateInput(row.expireDate));
+      setValue('stockEditBarcode', row.barcode || '');
+      setValue('stockEditSupplier', row.supplierName || '');
+      setValue('stockEditCompany', row.companyName || '');
+      setValue('stockEditVedClass', row.vedClass || '');
+      updateStockEditFormMode();
+      renderStockEdit();
+      refreshIcons();
+      const form = document.getElementById('stockEditForm');
+      if (form && form.scrollIntoView) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function saveStockEditForm() {
+      if (!valueOf('stockEditCategory') || !valueOf('stockEditName')) {
+        toast('กรุณาระบุหมวดวัสดุและชื่อรายการ');
+        return;
+      }
+      const editing = Boolean(valueOf('stockEditId'));
+      const auth = await requestAdminAuth(editing ? 'แก้ไขวัสดุคงคลัง' : 'เพิ่มวัสดุคงคลัง');
+      if (!auth) return;
+      const existing = editing ? state.data.materials.find(item => item.materialId === valueOf('stockEditId')) : null;
+      callServer('saveMaterial', {
+        materialId: valueOf('stockEditId'),
+        categoryId: valueOf('stockEditCategory'),
+        itemName: valueOf('stockEditName'),
+        unit: valueOf('stockEditUnit'),
+        unitPrice: valueOf('stockEditPrice'),
+        stockBalance: valueOf('stockEditStock'),
+        imageUrl: existing ? (existing.imageUrl || '') : '',
+        barcode: valueOf('stockEditBarcode'),
+        reorderPoint: valueOf('stockEditReorderPoint'),
+        minStock: valueOf('stockEditMinStock'),
+        maxStock: valueOf('stockEditMaxStock'),
+        usefulLife: existing ? (existing.usefulLife || '') : '',
+        lotNumber: valueOf('stockEditLot'),
+        expireDate: valueOf('stockEditExpireDate'),
+        supplierName: valueOf('stockEditSupplier'),
+        companyName: valueOf('stockEditCompany'),
+        vedClass: valueOf('stockEditVedClass'),
+        auth
+      }).then(data => {
+        state.data = data;
+        clearStockEditForm();
+        populateControls();
+        renderAll();
+        toast(editing ? 'แก้ไขวัสดุคงคลังแล้ว' : 'เพิ่มวัสดุคงคลังแล้ว');
+      });
+    }
+
+    async function deleteStockMaterial(materialId) {
+      const row = state.data.materials.find(item => item.materialId === materialId);
+      const auth = await requestAdminAuth('ลบวัสดุคงคลัง');
+      if (!auth) return;
+      if (!confirm('ยืนยันลบวัสดุคงคลัง "' + ((row && row.itemName) || materialId) + '"')) return;
+      callServer('deleteMaterial', { materialId, auth }).then(data => {
+        state.data = data;
+        if (valueOf('stockEditId') === materialId) clearStockEditForm();
+        populateControls();
+        renderAll();
+        toast('ลบวัสดุคงคลังแล้ว');
+      });
+    }
+
+    function deleteCurrentStockMaterial() {
+      const materialId = valueOf('stockEditId');
+      if (!materialId) {
+        toast('กรุณาเลือกวัสดุคงคลังจากตารางก่อนลบ');
+        return;
+      }
+      deleteStockMaterial(materialId);
+    }
+
+    function clearStockEditForm() {
+      setValue('stockEditId', '');
+      setValue('stockEditName', '');
+      setValue('stockEditUnit', '');
+      setValue('stockEditPrice', '');
+      setValue('stockEditStock', '');
+      setValue('stockEditReorderPoint', '');
+      setValue('stockEditMinStock', '');
+      setValue('stockEditMaxStock', '');
+      setValue('stockEditLot', '');
+      setValue('stockEditExpireDate', '');
+      setValue('stockEditBarcode', '');
+      setValue('stockEditSupplier', '');
+      setValue('stockEditCompany', '');
+      setValue('stockEditVedClass', '');
+      updateStockEditFormMode();
+      renderStockEdit();
+      refreshIcons();
     }
 
     function searchText(value) {
@@ -6546,6 +6848,9 @@
         'search-material': renderManage,
         'delete-category-current': deleteCurrentCategory,
         'delete-material-current': deleteCurrentMaterial,
+        'clear-stock-edit': clearStockEditForm,
+        'search-stock-edit': renderStockEdit,
+        'delete-stock-edit-current': deleteCurrentStockMaterial,
         'load-survey': loadSurveyRows,
         'save-survey': saveSurveyRows,
         'export-survey-excel': exportSurveyExcel,
