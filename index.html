@@ -180,6 +180,7 @@
     .main {
       min-width: 0;
       display: flex;
+      align-items: stretch;
       flex-direction: column;
       height: 100vh;
       overflow-y: auto;
@@ -209,6 +210,7 @@
     }
 
     .topbar {
+      flex-shrink: 0;
       min-height: 88px;
       padding: 24px 28px;
       background:
@@ -227,8 +229,8 @@
 
     .topbar h2 {
       margin: 0;
-      font-size: 34px;
-      line-height: 1.12;
+      font-size: clamp(23px, 2.1vw, 34px);
+      line-height: 1.16;
       font-weight: 800;
       color: #105e55;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -279,7 +281,11 @@
     .field {
       display: grid;
       gap: 5px;
-      min-width: 130px;
+      min-width: 0;
+    }
+
+    .filters .field {
+      min-width: 150px;
     }
 
     .field label {
@@ -301,6 +307,11 @@
       outline: none;
       font-size: 15px;
       font-weight: 500;
+      text-overflow: ellipsis;
+    }
+
+    select {
+      padding-right: 32px;
     }
 
     .topbar select {
@@ -326,6 +337,8 @@
     }
 
     .content {
+      flex: 1 1 auto;
+      min-height: 0;
       padding: 22px 24px 28px;
       overflow: auto;
       min-width: 0;
@@ -377,9 +390,11 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .panel-head h3 {
+      flex: 1 1 240px;
       min-width: 0;
     }
 
@@ -601,14 +616,18 @@
     }
 
     .manage-panel .search-strip {
-      grid-template-columns: minmax(0, 1fr) 126px;
+      grid-template-columns: minmax(0, 1fr) 150px;
+    }
+
+    .manage-panel .add-actions {
+      justify-content: end;
     }
 
     .manage-panel .search-strip .btn,
     .manage-panel .add-actions .btn,
     .manage-panel .delete-strip .btn {
-      width: 100%;
-      min-width: 0;
+      width: 150px;
+      min-width: 150px;
       justify-content: center;
     }
 
@@ -644,6 +663,74 @@
       grid-area: table;
     }
 
+    .material-panel {
+      grid-template-columns: minmax(0, 1fr) 150px;
+      grid-template-areas:
+        "head head"
+        "search search"
+        "form delete"
+        "table table";
+      align-items: end;
+    }
+
+    .material-panel .panel-head {
+      grid-area: head;
+    }
+
+    .material-panel .search-strip {
+      grid-area: search;
+    }
+
+    .material-panel #materialForm {
+      grid-area: form;
+    }
+
+    .material-panel .delete-strip {
+      grid-area: delete;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .material-panel #materialTable {
+      grid-area: table;
+    }
+
+    .stock-edit-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px;
+      grid-template-areas:
+        "head head"
+        "form delete";
+      gap: 14px;
+      align-items: end;
+    }
+
+    .stock-edit-panel .panel-head {
+      grid-area: head;
+      margin-bottom: 0;
+    }
+
+    .stock-edit-panel #stockEditForm {
+      grid-area: form;
+    }
+
+    .stock-edit-panel .delete-strip {
+      grid-area: delete;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .stock-edit-panel .add-actions {
+      justify-content: end;
+    }
+
+    .stock-edit-panel .add-actions .btn,
+    .stock-edit-panel .delete-strip .btn {
+      width: 180px;
+      min-width: 180px;
+      justify-content: center;
+    }
+
     #categoryTable {
       max-height: min(34vh, 320px);
     }
@@ -657,8 +744,13 @@
     #issueLineTable,
     #issueGroupCategorySummaryTable,
     #requisitionHistoryTable,
+    #receiveTable,
     #usageTable {
       max-height: min(58vh, 560px);
+    }
+
+    #receiveTable table {
+      min-width: 860px;
     }
 
     #materialTable,
@@ -762,18 +854,20 @@
 
     th,
     td {
-      padding: 10px 12px;
+      padding: 9px 10px;
       border-bottom: 1px solid var(--line);
       text-align: left;
       vertical-align: middle;
-      overflow-wrap: anywhere;
-      font-size: 15px;
+      overflow-wrap: break-word;
+      font-size: 14px;
+      line-height: 1.4;
     }
 
     th {
       background: linear-gradient(180deg, #e6f8f1 0%, #d9f2e9 100%);
       color: #174e4b;
       font-weight: 800;
+      white-space: nowrap;
       position: sticky;
       top: 0;
       z-index: 1;
@@ -786,6 +880,7 @@
     td.num,
     th.num {
       text-align: right;
+      white-space: nowrap;
     }
 
     .chart {
@@ -956,12 +1051,68 @@
       border-color: #e7bd73;
     }
 
-    #stockMaterialTable table,
     #stockMovementTable table,
     #executiveRiskTable table,
     #executiveForecastTable table,
     #executiveHeatmap {
       min-width: 1040px;
+    }
+
+    #stockMaterialTable table {
+      min-width: 1240px;
+      table-layout: fixed;
+    }
+
+    #stockMaterialTable th:nth-child(1),
+    #stockMaterialTable td:nth-child(1) {
+      width: 148px;
+    }
+
+    #stockMaterialTable th:nth-child(2),
+    #stockMaterialTable td:nth-child(2) {
+      width: auto;
+    }
+
+    #stockMaterialTable th:nth-child(3),
+    #stockMaterialTable td:nth-child(3) {
+      width: 76px;
+    }
+
+    #stockMaterialTable th:nth-child(4),
+    #stockMaterialTable td:nth-child(4),
+    #stockMaterialTable th:nth-child(5),
+    #stockMaterialTable td:nth-child(5) {
+      width: 78px;
+    }
+
+    #stockMaterialTable th:nth-child(6),
+    #stockMaterialTable td:nth-child(6) {
+      width: 90px;
+    }
+
+    #stockMaterialTable th:nth-child(7),
+    #stockMaterialTable td:nth-child(7) {
+      width: 100px;
+    }
+
+    #stockMaterialTable th:nth-child(8),
+    #stockMaterialTable td:nth-child(8) {
+      width: 116px;
+    }
+
+    #stockMaterialTable th:nth-child(9),
+    #stockMaterialTable td:nth-child(9) {
+      width: 104px;
+    }
+
+    #stockMaterialTable th:nth-child(10),
+    #stockMaterialTable td:nth-child(10) {
+      width: 150px;
+    }
+
+    #stockMaterialTable th:nth-child(11),
+    #stockMaterialTable td:nth-child(11) {
+      width: 100px;
     }
 
     #surveyCompletionTable table {
@@ -1128,8 +1279,12 @@
       grid-column: span 2;
     }
 
+    .compact-form .full {
+      grid-column: 1 / -1;
+    }
+
     #categoryForm {
-      grid-template-columns: 112px minmax(0, 1fr) 126px;
+      grid-template-columns: 112px minmax(0, 1fr) 150px;
     }
 
     #categoryForm .field,
@@ -1150,7 +1305,7 @@
     }
 
     #materialForm .add-actions {
-      grid-column: span 2;
+      grid-column: 1 / -1;
     }
 
     #stockEditForm {
@@ -1163,6 +1318,10 @@
 
     #stockEditForm .wide {
       grid-column: span 3;
+    }
+
+    #stockEditForm .add-actions {
+      grid-column: 1 / -1;
     }
 
     .add-actions {
@@ -1204,6 +1363,18 @@
 
     .stock-edit-strip {
       grid-template-columns: minmax(0, 1fr) minmax(0, 240px) auto;
+    }
+
+    .receive-strip {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 180px) minmax(0, 220px);
+    }
+
+    .table-btn {
+      min-height: 30px;
+      grid-template-columns: 16px auto;
+      gap: 6px;
+      padding: 5px 10px;
+      font-size: 13px;
     }
 
     .cell-limit {
@@ -1358,6 +1529,38 @@
       pointer-events: none;
     }
 
+    @media (max-width: 1440px) {
+      .compact-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .auth-form {
+        grid-template-columns: 1fr;
+      }
+
+      #materialForm,
+      #stockEditForm {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      #materialForm .wide,
+      #stockEditForm .wide {
+        grid-column: span 2;
+      }
+
+      #materialForm .add-actions {
+        grid-column: 1 / -1;
+      }
+
+      .stock-edit-strip {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 200px) auto;
+      }
+
+      .receive-strip {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 150px) minmax(0, 190px);
+      }
+    }
+
     @media (max-width: 980px) {
       .app {
         grid-template-columns: 1fr;
@@ -1424,7 +1627,8 @@
         justify-content: flex-start;
       }
 
-      .category-panel {
+      .category-panel,
+      .material-panel {
         grid-template-columns: 1fr;
         grid-template-areas:
           "head"
@@ -1432,6 +1636,20 @@
           "form"
           "delete"
           "table";
+      }
+
+      .stock-edit-panel {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "head"
+          "form"
+          "delete";
+      }
+
+      .stock-edit-panel .add-actions .btn,
+      .stock-edit-panel .delete-strip .btn {
+        width: 100%;
+        min-width: 0;
       }
 
       .survey-result-head {
@@ -1442,28 +1660,37 @@
         justify-content: flex-start;
       }
 
-      .compact-form .wide {
+      .compact-form .wide,
+      .compact-form .full {
         grid-column: auto;
       }
 
       #categoryForm,
-      #materialForm {
+      #materialForm,
+      #stockEditForm {
         grid-template-columns: 1fr;
       }
 
       #materialForm .wide,
-      #materialForm .add-actions {
+      #materialForm .add-actions,
+      #stockEditForm .wide {
         grid-column: auto;
       }
 
       .add-actions,
-      .delete-strip {
+      .delete-strip,
+      .manage-panel .add-actions,
+      .stock-edit-panel .add-actions {
         justify-content: stretch;
       }
 
       .add-actions .btn,
-      .delete-strip .btn {
+      .delete-strip .btn,
+      .manage-panel .search-strip .btn,
+      .manage-panel .add-actions .btn,
+      .manage-panel .delete-strip .btn {
         width: 100%;
+        min-width: 0;
       }
 
       .filters {
@@ -1490,7 +1717,7 @@
         <button type="button" data-view="stock"><i data-lucide="warehouse"></i><span>Stock วัสดุคงคลัง</span></button>
         <button type="button" data-view="survey"><i data-lucide="clipboard-list"></i><span>แบบสำรวจรายปี</span></button>
         <button type="button" data-view="requisition"><i data-lucide="file-pen-line"></i><span>การเบิกวัสดุ</span></button>
-        <button type="button" data-view="issue"><i data-lucide="package-minus"></i><span>ตัดจ่ายวัสดุ</span></button>
+        <button type="button" data-view="receive"><i data-lucide="inbox"></i><span>รับใบเบิก / ตัดจ่ายวัสดุ</span></button>
         <button type="button" data-view="usage"><i data-lucide="calculator"></i><span>อัตราการใช้</span></button>
         <button type="button" data-view="value"><i data-lucide="circle-dollar-sign"></i><span>สรุปมูลค่า</span></button>
         <button type="button" data-view="charts"><i data-lucide="bar-chart-3"></i><span>กราฟสรุป</span></button>
@@ -1770,7 +1997,7 @@
 
         <section class="view" id="view-stockedit">
           <div class="grid four" id="stockEditMetricGrid"></div>
-          <div class="panel">
+          <div class="panel stock-edit-panel">
             <div class="panel-head">
               <h3 id="stockEditFormTitle">เพิ่มวัสดุคงคลัง</h3>
               <div class="panel-actions">
@@ -1868,8 +2095,48 @@
           </div>
         </section>
 
-        <section class="view" id="view-issue">
-          <div class="grid two">
+        <section class="view" id="view-receive">
+          <div class="grid four" id="receiveMetricGrid"></div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>ใบเบิกที่รอรับ</h3>
+              <div class="panel-actions">
+                <button type="button" class="btn secondary" data-action="refresh-stats"><i data-lucide="refresh-cw"></i><span>รีเฟรช</span></button>
+              </div>
+            </div>
+            <div class="search-strip receive-strip">
+              <div class="field">
+                <label for="receiveSearch">ค้นหา</label>
+                <input id="receiveSearch" type="search" placeholder="พิมพ์เลขที่ใบเบิก วันที่ ผู้เบิก หรือกลุ่มงาน">
+              </div>
+              <div class="field">
+                <label for="receiveStatus">สถานะ</label>
+                <select id="receiveStatus">
+                  <option value="pending">รอรับ/รอตัดจ่าย</option>
+                  <option value="issued">ตัดจ่ายแล้ว</option>
+                  <option value="all">ทุกสถานะ</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="receiveGroup">กลุ่มงาน</label>
+                <select id="receiveGroup"></select>
+              </div>
+            </div>
+            <div class="table-wrap" id="receiveTable"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>รายละเอียดใบเบิกที่เลือก</h3>
+              <div class="panel-actions">
+                <button type="button" class="btn green" data-action="receive-selected-requisition"><i data-lucide="inbox"></i><span>รับใบเบิกนี้ไปตัดจ่าย</span></button>
+                <button type="button" class="btn secondary" data-action="print-receive-requisition"><i data-lucide="printer"></i><span>พิมพ์ใบเบิก</span></button>
+              </div>
+            </div>
+            <div id="receiveDetail"></div>
+          </div>
+
+          <div class="grid two" id="issuePanel">
             <div class="panel">
               <div class="panel-head">
                 <h3>ตัดจ่ายวัสดุ</h3>
@@ -1896,7 +2163,7 @@
                   <label for="issueCategory">หมวดวัสดุ</label>
                   <select id="issueCategory"></select>
                 </div>
-                <div class="field wide">
+                <div class="field full">
                   <label for="issueMaterial">รายการวัสดุ</label>
                   <select id="issueMaterial"></select>
                 </div>
@@ -1984,7 +2251,7 @@
                   <label for="reqCategory">หมวด</label>
                   <select id="reqCategory"></select>
                 </div>
-                <div class="field wide">
+                <div class="field full">
                   <label for="reqMaterial">รายการ</label>
                   <select id="reqMaterial"></select>
                 </div>
@@ -2311,6 +2578,7 @@
       stockIssueEditIndex: -1,
       surveyRows: [],
       selectedRequisitionId: '',
+      selectedReceiveId: '',
       surveySaveResult: null,
       issueResult: null,
       autoReceiverName: '',
@@ -2352,7 +2620,7 @@
       stock: ['Stock วัสดุคงคลัง', ''],
       survey: ['แบบสำรวจพัสดุรายปี', ''],
       requisition: ['การเบิกวัสดุ', ''],
-      issue: ['ตัดจ่ายวัสดุ', ''],
+      receive: ['รับใบเบิก / ตัดจ่ายวัสดุ', ''],
       usage: ['อัตราการใช้', ''],
       value: ['สรุปมูลค่า', ''],
       charts: ['กราฟสรุป', ''],
@@ -2390,6 +2658,8 @@
         if (button.dataset.editIssueLine) editIssueLine(Number(button.dataset.editIssueLine));
         if (button.dataset.removeIssueLine) removeIssueLine(Number(button.dataset.removeIssueLine));
         if (button.dataset.requisitionId) openRequisitionHistory(button.dataset.requisitionId);
+        if (button.dataset.receiveSelect) selectReceiveRequisition(button.dataset.receiveSelect);
+        if (button.dataset.receiveLoad) receiveRequisitionById(button.dataset.receiveLoad, { goToIssue: true });
       });
 
       document.body.addEventListener('change', event => {
@@ -2418,6 +2688,9 @@
         if (event.target.id === 'stockEditFilterCategory') {
           renderStockEdit();
         }
+        if (['receiveStatus', 'receiveGroup'].includes(event.target.id)) {
+          renderReceive();
+        }
       });
 
       document.body.addEventListener('input', event => {
@@ -2432,6 +2705,9 @@
         }
         if (event.target.id === 'requisitionHistorySearch') {
           renderRequisitionHistory();
+        }
+        if (event.target.id === 'receiveSearch') {
+          renderReceive();
         }
       });
 
@@ -4809,6 +5085,7 @@
       setOptions('reqCategory', [{ value: ALL_CATEGORIES, label: 'ทุกประเภท' }].concat(categoryOptions), rawValueOf('reqCategory') || ALL_CATEGORIES, { preferAll: true });
       setOptions('issueGroup', requisitionGroupOptions, valueOf('issueGroup') || valueOf('filterGroup') || (requisitionGroupOptions[0] && requisitionGroupOptions[0].value), { preferFirst: true });
       setOptions('issueCategory', [{ value: ALL_CATEGORIES, label: 'ทุกหมวดวัสดุ' }].concat(categoryOptions), rawValueOf('issueCategory') || rawValueOf('filterCategory') || ALL_CATEGORIES, { preferAll: true });
+      setOptions('receiveGroup', [{ value: ALL_GROUPS, label: 'ทุกกลุ่มงาน' }].concat(requisitionGroupOptions), rawValueOf('receiveGroup') || ALL_GROUPS, { preferAll: true });
       document.getElementById('requestDate').value = document.getElementById('requestDate').value || data.today;
       document.getElementById('issueDate').value = document.getElementById('issueDate').value || data.today;
       populateIssueRequisitionOptions();
@@ -5052,6 +5329,7 @@
       renderRequisitionLines();
       renderRequisitionMonthlySummary();
       renderRequisitionHistory();
+      renderReceive();
       renderUsage();
       renderValue();
       renderExecutive();
@@ -5069,7 +5347,7 @@
       document.getElementById('viewTitle').textContent = meta[0];
       document.getElementById('viewSubtitle').textContent = '';
       const topbar = document.querySelector('.topbar');
-      if (topbar) topbar.classList.toggle('hide-filters', ['manage', 'stockedit', 'survey', 'issue', 'requisition'].includes(state.view));
+      if (topbar) topbar.classList.toggle('hide-filters', ['manage', 'stockedit', 'survey', 'receive', 'requisition'].includes(state.view));
       if (!silent) drawChartsWhenReady();
       refreshIcons();
     }
@@ -6658,6 +6936,152 @@
       return `<button type="button" class="table-link" data-requisition-id="${escapeHtml(requestId)}">${escapeHtml(label || '-')}</button>`;
     }
 
+    function isRequisitionIssued(row) {
+      return cleanLocalText(row && row.status) === 'ตัดจ่ายแล้ว';
+    }
+
+    function getReceiveRows() {
+      if (!state.data) return [];
+      const query = cleanLocalText(rawValueOf('receiveSearch')).toLowerCase();
+      const statusFilter = rawValueOf('receiveStatus') || 'pending';
+      const groupName = valueOf('receiveGroup');
+      return ((state.data.requisitions) || [])
+        .filter(row => !/^ISSUE/i.test(cleanLocalText(row.requestId)))
+        .filter(row => {
+          if (statusFilter === 'pending') return !isRequisitionIssued(row);
+          if (statusFilter === 'issued') return isRequisitionIssued(row);
+          return true;
+        })
+        .filter(row => !groupName || cleanLocalText(row.requesterGroup) === groupName)
+        .filter(row => !query || [
+          row.requestId,
+          row.requestDate,
+          formatLocalThaiDate(row.requestDate),
+          row.requesterName,
+          row.requesterPosition,
+          row.requesterGroup,
+          row.status
+        ].some(value => cleanLocalText(value).toLowerCase().includes(query)))
+        .slice()
+        .sort((a, b) => cleanLocalText(b.requestDate).localeCompare(cleanLocalText(a.requestDate)));
+    }
+
+    function renderReceive() {
+      const tableElement = document.getElementById('receiveTable');
+      if (!tableElement || !state.data) return;
+      const rows = getReceiveRows();
+      if (!state.selectedReceiveId || !rows.some(row => cleanLocalText(row.requestId) === cleanLocalText(state.selectedReceiveId))) {
+        state.selectedReceiveId = rows[0] ? rows[0].requestId : '';
+      }
+
+      const all = ((state.data.requisitions) || []).filter(row => !/^ISSUE/i.test(cleanLocalText(row.requestId)));
+      const pending = all.filter(row => !isRequisitionIssued(row));
+      const pendingValue = pending.reduce((sum, row) => sum + getRequisitionDisplayTotal(row), 0);
+      const metricGrid = document.getElementById('receiveMetricGrid');
+      if (metricGrid) {
+        metricGrid.innerHTML = [
+          metric('files', all.length, 'ใบเบิกทั้งหมด', ''),
+          metric('inbox', pending.length, 'รอรับ/รอตัดจ่าย', 'amber'),
+          metric('package-check', all.length - pending.length, 'ตัดจ่ายแล้ว', 'green'),
+          metric('wallet', pendingValue, 'มูลค่าที่รอตัดจ่าย', 'coral', true)
+        ].join('');
+      }
+
+      const selectedId = cleanLocalText(state.selectedReceiveId);
+      tableElement.innerHTML = rows.length
+        ? table(['เลขที่ใบเบิก', 'วันที่', 'กลุ่มงาน', 'ผู้เบิก', 'รายการ', 'มูลค่า', 'สถานะ', ''], rows.map(row => {
+          const items = getRequisitionItems(row.requestId);
+          const issued = isRequisitionIssued(row);
+          const isSelected = cleanLocalText(row.requestId) === selectedId;
+          const label = escapeHtml(row.requestId || '-');
+          return [
+            `<button type="button" class="table-link" data-receive-select="${escapeHtml(row.requestId)}">${isSelected ? '<strong>' + label + '</strong>' : label}</button>`,
+            clipText(formatLocalThaiDate(row.requestDate)),
+            clipText(row.requesterGroup || ''),
+            clipText(row.requesterName || ''),
+            formatNumber(items.length),
+            formatMoney(getRequisitionDisplayTotal(row, items)),
+            badge(issued ? 'ตัดจ่ายแล้ว' : (row.status || 'รอตัดจ่าย'), issued ? 'green' : 'amber'),
+            issued
+              ? ''
+              : `<button type="button" class="btn green table-btn" data-receive-load="${escapeHtml(row.requestId)}"><i data-lucide="inbox"></i><span>รับใบเบิก</span></button>`
+          ];
+        }), [4, 5])
+        : empty('ไม่มีใบเบิกตามเงื่อนไขที่เลือก');
+
+      renderReceiveDetail();
+    }
+
+    function renderReceiveDetail() {
+      const element = document.getElementById('receiveDetail');
+      if (!element || !state.data) return;
+      const requisition = findRequisitionById(state.selectedReceiveId);
+      if (!requisition) {
+        element.innerHTML = empty('เลือกเลขที่ใบเบิกจากตารางเพื่อดูรายการวัสดุ');
+        return;
+      }
+      const items = getRequisitionItems(requisition.requestId);
+      const detailTotal = getRequisitionDisplayTotal(requisition, items);
+      const summary = `
+        <div class="detail-summary">
+          <div class="detail-item"><span>เลขที่ใบเบิก</span><strong>${escapeHtml(requisition.requestId || '-')}</strong></div>
+          <div class="detail-item"><span>วันที่</span><strong>${escapeHtml(formatLocalThaiDate(requisition.requestDate))}</strong></div>
+          <div class="detail-item"><span>ผู้เบิก</span><strong>${escapeHtml(requisition.requesterName || '-')}</strong></div>
+          <div class="detail-item"><span>ตำแหน่ง</span><strong>${escapeHtml(requisition.requesterPosition || '-')}</strong></div>
+          <div class="detail-item"><span>กลุ่มงาน</span><strong>${escapeHtml(requisition.requesterGroup || '-')}</strong></div>
+          <div class="detail-item"><span>สถานะ</span><strong>${escapeHtml(requisition.status || 'รอตัดจ่าย')}</strong></div>
+          <div class="detail-item"><span>รายการเบิก</span><strong>${formatNumber(items.length)} รายการ</strong></div>
+          <div class="detail-item"><span>มูลค่า</span><strong>${formatMoney(detailTotal)} บาท</strong></div>
+        </div>`;
+      const lines = table(['ลำดับ', 'หมวด', 'รายการ', 'หน่วย', 'เบิก', 'คงเหลือในคลัง', 'ราคา', 'มูลค่า'], items.map(row => {
+        const material = ((state.data.materials) || []).find(item => cleanLocalText(item.materialId) === cleanLocalText(row.materialId)) || {};
+        const requested = toInteger(row.qtyRequested || row.qtyIssued);
+        const stockBalance = toInteger(material.stockBalance);
+        const shortage = requested > stockBalance;
+        return [
+          row.lineNo,
+          clipText(row.categoryName || material.categoryName || ''),
+          clipText(row.itemName || material.itemName || ''),
+          row.unit || material.unit || '',
+          formatNumber(requested),
+          shortage
+            ? `<span class="pill coral">${escapeHtml(formatNumber(stockBalance))}</span>`
+            : formatNumber(stockBalance),
+          formatMoney(row.unitPrice || material.unitPrice),
+          formatMoney(row.amount)
+        ];
+      }), [0, 4, 5, 6, 7]);
+      element.innerHTML = summary + `<div class="table-wrap">${items.length ? lines : empty('ยังไม่มีรายการวัสดุที่บันทึกไว้สำหรับใบเบิกนี้')}</div>`;
+      refreshIcons();
+    }
+
+    function selectReceiveRequisition(requestId) {
+      const id = cleanLocalText(requestId);
+      if (!id) return;
+      state.selectedReceiveId = id;
+      renderReceive();
+      refreshIcons();
+    }
+
+    function receiveSelectedRequisition() {
+      const requestId = cleanLocalText(state.selectedReceiveId);
+      if (!requestId) {
+        toast('กรุณาเลือกใบเบิกจากตารางก่อน');
+        return;
+      }
+      receiveRequisitionById(requestId, { goToIssue: true });
+    }
+
+    function printReceiveRequisition() {
+      const requestId = cleanLocalText(state.selectedReceiveId);
+      if (!requestId) {
+        toast('กรุณาเลือกใบเบิกที่ต้องการพิมพ์');
+        return;
+      }
+      state.selectedRequisitionId = requestId;
+      printSelectedRequisition();
+    }
+
     function renderSyncStatus() {
       const element = document.getElementById('syncStatus');
       if (element) element.textContent = '';
@@ -6858,6 +7282,8 @@
         'export-survey-completion-excel': exportSurveyCompletionExcel,
         'refresh-stock': refreshStats,
         'load-issue-requisition': loadIssueRequisition,
+        'receive-selected-requisition': receiveSelectedRequisition,
+        'print-receive-requisition': printReceiveRequisition,
         'add-issue-line': addIssueLine,
         'print-issue-form': printIssueStockForm,
         'clear-issue-lines': () => {
@@ -7299,26 +7725,33 @@
     }
 
     function loadIssueRequisition() {
-      if (!state.data) return;
-      const requestId = cleanLocalText(valueOf('issueRequestId'));
+      receiveRequisitionById(valueOf('issueRequestId'));
+    }
+
+    function receiveRequisitionById(rawRequestId, options) {
+      options = options || {};
+      if (!state.data) return false;
+      const requestId = cleanLocalText(rawRequestId);
       if (!requestId) {
         toast('กรุณาระบุเลขที่ใบเบิก');
-        return;
+        return false;
       }
       const requisition = findRequisitionById(requestId);
       if (!requisition) {
         toast('ไม่พบเลขที่ใบเบิกนี้');
-        return;
+        return false;
       }
       if (cleanLocalText(requisition.status) === 'ตัดจ่ายแล้ว') {
         toast('ใบเบิกนี้ตัดจ่ายแล้ว');
-        return;
+        return false;
       }
       const items = getRequisitionItems(requestId);
       if (!items.length) {
         toast('ใบเบิกนี้ยังไม่มีรายการวัสดุ');
-        return;
+        return false;
       }
+      setValue('issueRequestId', requestId);
+      state.selectedReceiveId = requestId;
       state.stockIssueSourceRequestId = requestId;
       state.stockIssueEditIndex = -1;
       state.issueResult = null;
@@ -7346,7 +7779,14 @@
       renderIssueMaterialOptions();
       renderIssueLines();
       renderIssueResult();
+      renderReceive();
+      if (options.goToIssue) {
+        switchView('receive');
+        const issuePanel = document.getElementById('issuePanel');
+        if (issuePanel && issuePanel.scrollIntoView) issuePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       toast('รับใบเบิก ' + requestId + ' เข้าตารางตัดจ่ายแล้ว');
+      return true;
     }
 
     function editIssueLine(index) {
