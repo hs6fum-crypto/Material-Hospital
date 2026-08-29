@@ -1534,7 +1534,7 @@
     }
 
     .usage-strip {
-      grid-template-columns: minmax(0, 220px) minmax(0, 220px) auto;
+      grid-template-columns: minmax(0, 220px) minmax(0, 220px) auto auto;
       justify-content: start;
     }
 
@@ -2509,7 +2509,6 @@
               <div class="panel-actions">
                 <button type="button" class="btn secondary" data-action="print-usage"><i data-lucide="printer"></i><span>พิมพ์</span></button>
                 <button type="button" class="btn green" data-action="export-usage-excel"><i data-lucide="file-spreadsheet"></i><span>ส่งออก Excel</span></button>
-                <button type="button" class="btn secondary" data-action="refresh-stats"><i data-lucide="refresh-cw"></i><span>คำนวณใหม่</span></button>
               </div>
             </div>
             <div class="search-strip usage-strip">
@@ -2530,6 +2529,7 @@
                 </div>
               </div>
               <button type="button" class="btn secondary" data-action="reset-usage-years"><i data-lucide="rotate-ccw"></i><span>ค่าเริ่มต้น</span></button>
+              <button type="button" class="btn secondary" data-action="refresh-stats"><i data-lucide="refresh-cw"></i><span>คำนวณใหม่</span></button>
             </div>
             <p class="range-note" id="usageRangeNote"></p>
             <div class="table-wrap" id="usageTable"></div>
