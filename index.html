@@ -1287,28 +1287,56 @@
       width: 100px;
     }
 
+    /* ความกว้างจริงตั้งจาก JS ตามจำนวนหมวดวัสดุ (ดู renderSurveyCompletionSummary) */
     #surveyCompletionTable table {
-      min-width: 2380px;
+      min-width: 900px;
       table-layout: fixed;
     }
 
+    /* ชื่อหมวดวัสดุบนหัวตารางยาว ให้ตัดบรรทัดแทนการล้นทับช่องข้างๆ */
+    #surveyCompletionTable th {
+      white-space: normal;
+      overflow-wrap: break-word;
+      line-height: 1.3;
+      vertical-align: bottom;
+    }
+
+    /* ตรึงคอลัมน์กลุ่มงานและสถานะรวมไว้ ตอนเลื่อนดูหมวดวัสดุทางขวา */
     #surveyCompletionTable th:nth-child(1),
     #surveyCompletionTable td:nth-child(1) {
-      width: 260px;
+      width: 250px;
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: #ffffff;
     }
 
     #surveyCompletionTable th:nth-child(2),
     #surveyCompletionTable td:nth-child(2) {
-      width: 170px;
+      width: 140px;
+      position: sticky;
+      left: 250px;
+      z-index: 2;
+      background: #ffffff;
+      box-shadow: 1px 0 0 var(--line);
+    }
+
+    #surveyCompletionTable th:nth-child(1),
+    #surveyCompletionTable th:nth-child(2) {
+      z-index: 3;
+      background: linear-gradient(180deg, #e6f8f1 0%, #d9f2e9 100%);
     }
 
     #surveyCompletionTable th:nth-child(3),
     #surveyCompletionTable td:nth-child(3),
     #surveyCompletionTable th:nth-child(4),
-    #surveyCompletionTable td:nth-child(4),
+    #surveyCompletionTable td:nth-child(4) {
+      width: 104px;
+    }
+
     #surveyCompletionTable th:nth-child(5),
     #surveyCompletionTable td:nth-child(5) {
-      width: 110px;
+      width: 88px;
     }
 
     #surveyCompletionTable th:nth-child(6),
@@ -1318,14 +1346,18 @@
 
     #surveyCompletionTable th:nth-child(n+7),
     #surveyCompletionTable td:nth-child(n+7) {
-      width: 130px;
+      width: 132px;
       text-align: center;
     }
 
-    #surveyCompletionTable th.num,
     #surveyCompletionTable td.num,
     #surveyCompletionTable .pill {
       white-space: nowrap;
+    }
+
+    #surveyCompletionTable td:nth-child(1) .cell-limit {
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
     }
 
     .save-chart {
@@ -2809,6 +2841,10 @@
     const APP_SPREADSHEET_ID = '1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM';
     const ALL_CATEGORIES = '__ALL_CATEGORIES__';
     const ALL_GROUPS = '__ALL_GROUPS__';
+    const SURVEY_COMPLETION_HEADERS = ['กลุ่มงาน', 'สถานะรวม', 'หมวดที่ครบ', 'รายการที่สำรวจ', 'ยังขาด', '%'];
+    // ต้องตรงกับความกว้างคอลัมน์ของ #surveyCompletionTable ในส่วน CSS
+    const SURVEY_COMPLETION_FIXED_WIDTH = 250 + 140 + 104 + 104 + 88 + 72;
+    const SURVEY_COMPLETION_CATEGORY_WIDTH = 132;
     const YEAR_COMBO_IDS = ['filterYear', 'surveyYear', 'usageYearStart', 'usageYearEnd'];
     const USAGE_DEFAULT_YEARS_BACK = 3;
     const YEAR_SUGGEST_BACK = 5;
@@ -6249,7 +6285,7 @@
         element.innerHTML = empty('ไม่มีข้อมูลกลุ่มงานหรือหมวดวัสดุสำหรับสรุป');
         return;
       }
-      const headers = ['กลุ่มงาน', 'สถานะรวม', 'ครบหมวด', 'สำรวจแล้ว', 'ยังขาด', '%'].concat(summary.categories.map(row => row.categoryName));
+      const headers = SURVEY_COMPLETION_HEADERS.concat(summary.categories.map(row => row.categoryName));
       const rows = summary.groups.map(group => [
         clipText(group.groupName),
         badge(group.statusText, group.statusColor),
@@ -6259,6 +6295,13 @@
         formatNumber(group.percent) + '%'
       ].concat(group.categories.map(category => completionStatusBadge(category))));
       element.innerHTML = table(headers, rows, [2, 3, 4, 5]);
+
+      // กว้างพอให้ทุกคอลัมน์ได้ความกว้างเต็มตามที่ตั้งไว้ ไม่ถูกบีบจนตัวอักษรล้น
+      // และไม่กว้างเกินจำเป็นตอนกรองเหลือหมวดเดียว
+      const tableElement = element.querySelector('table');
+      if (tableElement) {
+        tableElement.style.minWidth = (SURVEY_COMPLETION_FIXED_WIDTH + summary.categories.length * SURVEY_COMPLETION_CATEGORY_WIDTH) + 'px';
+      }
     }
 
     function getSurveyCompletionSummary() {
@@ -6372,7 +6415,7 @@
         toast('ไม่สามารถเปิดหน้าพิมพ์ได้');
         return;
       }
-      const headers = ['ลำดับ', 'กลุ่มงาน', 'สถานะรวม', 'ครบหมวด', 'สำรวจแล้ว', 'ยังขาด', '%'].concat(summary.categories.map(row => row.categoryName));
+      const headers = ['ลำดับ'].concat(SURVEY_COMPLETION_HEADERS, summary.categories.map(row => row.categoryName));
       const body = summary.groups.map((group, index) => `<tr>
         <td class="num">${index + 1}</td>
         <td>${escapeHtml(group.groupName)}</td>
@@ -6422,7 +6465,7 @@
         return;
       }
       const fileName = 'สรุปความครบถ้วนการสำรวจ_' + localExportTimestamp() + '.xls';
-      const headers = ['กลุ่มงาน', 'สถานะรวม', 'ครบหมวด', 'สำรวจแล้ว', 'ยังขาด', 'เปอร์เซ็นต์'].concat(summary.categories.map(row => row.categoryName));
+      const headers = SURVEY_COMPLETION_HEADERS.slice(0, -1).concat('เปอร์เซ็นต์', summary.categories.map(row => row.categoryName));
       const rows = summary.groups.map(group => [
         group.groupName,
         group.statusText,
