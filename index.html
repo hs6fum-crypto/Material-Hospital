@@ -268,6 +268,111 @@
       min-width: 190px;
     }
 
+    .topbar.hide-year .year-field {
+      display: none;
+    }
+
+    .year-input {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.3px;
+    }
+
+    .combo {
+      position: relative;
+    }
+
+    .combo > input {
+      padding-right: 34px;
+    }
+
+    .combo-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+      color: #47746e;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .combo-toggle:hover {
+      color: var(--teal);
+    }
+
+    .combo-caret {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid currentColor;
+      transition: transform 0.15s ease;
+    }
+
+    .combo.open .combo-caret {
+      transform: rotate(180deg);
+    }
+
+    .combo-list {
+      position: absolute;
+      z-index: 60;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 320px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 4px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 14px 30px rgba(30, 92, 76, 0.2);
+      scrollbar-width: thin;
+    }
+
+    .combo.up .combo-list {
+      top: auto;
+      bottom: calc(100% + 4px);
+    }
+
+    .combo-list[hidden] {
+      display: none;
+    }
+
+    .combo-option {
+      display: block;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .combo-option:hover,
+    .combo-option.active {
+      background: var(--teal-soft);
+    }
+
+    .combo-option[aria-selected="true"] {
+      background: var(--teal);
+      color: #ffffff;
+    }
+
+    .combo-empty {
+      padding: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+    }
+
     .filter-label-btn {
       width: 100%;
       min-height: 34px;
@@ -1428,6 +1533,18 @@
       min-width: 0;
     }
 
+    .usage-strip {
+      grid-template-columns: minmax(0, 220px) minmax(0, 220px) auto;
+      justify-content: start;
+    }
+
+    .range-note {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     .stock-edit-strip {
       grid-template-columns: minmax(0, 1fr) minmax(0, 240px) auto;
     }
@@ -1807,9 +1924,14 @@
           <p class="status" id="syncStatus" aria-hidden="true"></p>
         </div>
         <div class="filters">
-          <div class="field action-field">
+          <!-- ซ่อนเฉพาะหน้าอัตราการใช้ (หน้านั้นมีช่วงปีเปรียบเทียบของตัวเอง) ดู switchView() -->
+          <div class="field action-field year-field">
             <label for="filterYear">ปี</label>
-            <select id="filterYear"></select>
+            <div class="combo" data-combo="filterYear">
+              <input id="filterYear" class="year-input" type="text" inputmode="numeric" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="filterYearList" placeholder="พ.ศ." title="เลือกปีจากรายการ หรือพิมพ์ปี พ.ศ. ที่ต้องการได้อิสระ">
+              <button type="button" class="combo-toggle" data-combo-toggle="filterYear" tabindex="-1" aria-label="เปิดรายการปี"><span class="combo-caret" aria-hidden="true"></span></button>
+              <div class="combo-list" id="filterYearList" role="listbox" hidden></div>
+            </div>
           </div>
           <div class="field">
             <label for="filterCategory">ประเภท</label>
@@ -1997,7 +2119,11 @@
             <div class="compact-form">
               <div class="field">
                 <label for="surveyYear">ปี</label>
-                <select id="surveyYear"></select>
+                <div class="combo" data-combo="surveyYear">
+                  <input id="surveyYear" class="year-input" type="text" inputmode="numeric" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="surveyYearList" placeholder="พ.ศ." title="เลือกปีจากรายการ หรือพิมพ์ปี พ.ศ. ที่ต้องการได้อิสระ">
+                  <button type="button" class="combo-toggle" data-combo-toggle="surveyYear" tabindex="-1" aria-label="เปิดรายการปี"><span class="combo-caret" aria-hidden="true"></span></button>
+                  <div class="combo-list" id="surveyYearList" role="listbox" hidden></div>
+                </div>
               </div>
               <div class="field">
                 <label for="surveyGroup">กลุ่มงาน</label>
@@ -2386,6 +2512,26 @@
                 <button type="button" class="btn secondary" data-action="refresh-stats"><i data-lucide="refresh-cw"></i><span>คำนวณใหม่</span></button>
               </div>
             </div>
+            <div class="search-strip usage-strip">
+              <div class="field">
+                <label for="usageYearStart">เปรียบเทียบตั้งแต่ปี</label>
+                <div class="combo" data-combo="usageYearStart">
+                  <input id="usageYearStart" class="year-input" type="text" inputmode="numeric" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="usageYearStartList" placeholder="พ.ศ." title="เลือกปีเริ่มต้นของช่วงที่ใช้เปรียบเทียบ หรือพิมพ์ปี พ.ศ. เองได้">
+                  <button type="button" class="combo-toggle" data-combo-toggle="usageYearStart" tabindex="-1" aria-label="เปิดรายการปี"><span class="combo-caret" aria-hidden="true"></span></button>
+                  <div class="combo-list" id="usageYearStartList" role="listbox" hidden></div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="usageYearEnd">ถึงปี</label>
+                <div class="combo" data-combo="usageYearEnd">
+                  <input id="usageYearEnd" class="year-input" type="text" inputmode="numeric" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="usageYearEndList" placeholder="พ.ศ." title="เลือกปีสุดท้ายของช่วงที่ใช้เปรียบเทียบ หรือพิมพ์ปี พ.ศ. เองได้">
+                  <button type="button" class="combo-toggle" data-combo-toggle="usageYearEnd" tabindex="-1" aria-label="เปิดรายการปี"><span class="combo-caret" aria-hidden="true"></span></button>
+                  <div class="combo-list" id="usageYearEndList" role="listbox" hidden></div>
+                </div>
+              </div>
+              <button type="button" class="btn secondary" data-action="reset-usage-years"><i data-lucide="rotate-ccw"></i><span>ค่าเริ่มต้น</span></button>
+            </div>
+            <p class="range-note" id="usageRangeNote"></p>
             <div class="table-wrap" id="usageTable"></div>
           </div>
         </section>
@@ -2663,8 +2809,12 @@
     const APP_SPREADSHEET_ID = '1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM';
     const ALL_CATEGORIES = '__ALL_CATEGORIES__';
     const ALL_GROUPS = '__ALL_GROUPS__';
-    const YEAR_START = 2565;
-    const YEAR_END = 2600;
+    const YEAR_COMBO_IDS = ['filterYear', 'surveyYear', 'usageYearStart', 'usageYearEnd'];
+    const USAGE_DEFAULT_YEARS_BACK = 3;
+    const YEAR_SUGGEST_BACK = 5;
+    const YEAR_SUGGEST_FORWARD = 20;
+    const YEAR_MIN = 2400;
+    const YEAR_MAX = 2700;
     const ADMIN_USER = 'admin';
     const ADMIN_PASSWORD = '11254';
     const LEGACY_TOTAL_GROUP = 'รวมทุกกลุ่มงาน';
@@ -2711,6 +2861,8 @@
     });
 
     function bindEvents() {
+      bindYearCombos();
+
       document.body.addEventListener('click', event => {
         const button = event.target.closest('button');
         if (!button) return;
@@ -2736,7 +2888,10 @@
       });
 
       document.body.addEventListener('change', event => {
-        if (['filterYear', 'filterCategory', 'filterGroup'].includes(event.target.id)) {
+        if (YEAR_COMBO_IDS.includes(event.target.id)) {
+          normalizeYearField(event.target);
+        }
+        if (['filterYear', 'filterCategory', 'filterGroup', 'usageYearStart', 'usageYearEnd'].includes(event.target.id)) {
           refreshStats();
         }
         if (event.target.id === 'requesterName') {
@@ -2799,6 +2954,89 @@
       document.getElementById('authForm').addEventListener('submit', event => {
         event.preventDefault();
         submitAdminAuth();
+      });
+    }
+
+    function bindYearCombos() {
+      document.addEventListener('mousedown', event => {
+        if (event.target.closest('.combo-list, [data-combo-toggle]')) event.preventDefault();
+      });
+
+      document.addEventListener('click', event => {
+        const toggle = event.target.closest('[data-combo-toggle]');
+        if (toggle) {
+          const id = toggle.dataset.comboToggle;
+          const wrap = document.querySelector('[data-combo="' + id + '"]');
+          const input = document.getElementById(id);
+          if (wrap && wrap.classList.contains('open')) {
+            closeYearCombos();
+          } else {
+            openYearCombo(id);
+            if (input) input.focus();
+          }
+          return;
+        }
+
+        const option = event.target.closest('[data-combo-value]');
+        if (option) {
+          const wrap = option.closest('[data-combo]');
+          const id = wrap && wrap.dataset.combo;
+          commitYearCombo(id ? document.getElementById(id) : null, option.dataset.comboValue);
+          return;
+        }
+
+        if (!event.target.closest('[data-combo]')) closeYearCombos();
+      });
+
+      document.body.addEventListener('focusin', event => {
+        if (YEAR_COMBO_IDS.includes(event.target.id)) {
+          openYearCombo(event.target.id);
+          event.target.select();
+        } else if (!event.target.closest('[data-combo]')) {
+          closeYearCombos();
+        }
+      });
+
+      document.body.addEventListener('input', event => {
+        if (YEAR_COMBO_IDS.includes(event.target.id)) {
+          openYearCombo(event.target.id, event.target.value);
+        }
+      });
+
+      document.body.addEventListener('keydown', event => {
+        const id = event.target.id;
+        if (!YEAR_COMBO_IDS.includes(id)) return;
+        const list = document.getElementById(id + 'List');
+        if (!list) return;
+
+        if (event.key === 'Escape') {
+          closeYearCombos();
+          return;
+        }
+
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault();
+          if (list.hidden) {
+            openYearCombo(id, event.target.value);
+            return;
+          }
+          const options = Array.prototype.slice.call(list.querySelectorAll('.combo-option'));
+          if (!options.length) return;
+          const activeIndex = options.findIndex(item => item.classList.contains('active'));
+          const nextIndex = event.key === 'ArrowDown'
+            ? Math.min(options.length - 1, activeIndex + 1)
+            : Math.max(0, (activeIndex < 0 ? options.length : activeIndex) - 1);
+          options.forEach(item => item.classList.remove('active'));
+          options[nextIndex].classList.add('active');
+          options[nextIndex].scrollIntoView({ block: 'nearest' });
+          return;
+        }
+
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          const active = list.hidden ? null : list.querySelector('.combo-option.active');
+          commitYearCombo(event.target, active ? active.dataset.comboValue : undefined);
+        }
       });
     }
 
@@ -4894,8 +5132,9 @@
     }
 
     function buildYearRange() {
+      const current = getLocalThaiYear();
       const years = [];
-      for (let year = YEAR_END; year >= YEAR_START; year -= 1) {
+      for (let year = current + YEAR_SUGGEST_FORWARD; year >= current - YEAR_SUGGEST_BACK; year -= 1) {
         years.push(year);
       }
       return years;
@@ -4930,7 +5169,7 @@
     }
 
     function clampLocalYear(year) {
-      return Math.max(YEAR_START, Math.min(YEAR_END, normalizeLocalYear(year)));
+      return Math.max(YEAR_MIN, Math.min(YEAR_MAX, normalizeLocalYear(year)));
     }
 
     function localSurveyKey(year, groupName, materialId) {
@@ -5126,9 +5365,19 @@
       const year = valueOf('filterYear');
       return {
         year,
+        yearStart: valueOf('usageYearStart'),
+        yearEnd: valueOf('usageYearEnd'),
         categoryId: valueOf('filterCategory'),
         groupName: valueOf('filterGroup')
       };
+    }
+
+    function resetUsageYearRange() {
+      const year = normalizeLocalYear(valueOf('filterYear') || (state.data && state.data.currentThaiYear));
+      setValue('usageYearStart', year - USAGE_DEFAULT_YEARS_BACK);
+      setValue('usageYearEnd', year - 1);
+      YEAR_COMBO_IDS.forEach(id => renderYearCombo(id));
+      refreshStats();
     }
 
     function getRequestedView() {
@@ -5138,15 +5387,18 @@
 
     function populateControls() {
       const data = state.data;
-      const yearOptions = data.years.map(year => ({ value: year, label: year }));
       const categoryOptions = data.categories.map(row => ({ value: row.categoryId, label: row.categoryName }));
       const groupOptions = data.groups.map(row => ({ value: row.groupName, label: row.groupName }));
       const requisitionGroupOptions = data.groups
         .filter(row => row.groupName !== LEGACY_TOTAL_GROUP)
         .map(row => ({ value: row.groupName, label: row.groupName }));
       const selectedRequester = findRequesterForForm(valueOf('requesterName'), valueOf('requesterGroup'), true);
-      setOptions('filterYear', yearOptions, data.currentThaiYear, { preferFirst: true });
-      setOptions('surveyYear', yearOptions, valueOf('filterYear') || data.currentThaiYear, { preferFirst: true });
+      setYearField('filterYear', data.currentThaiYear);
+      setYearField('surveyYear', valueOf('filterYear') || data.currentThaiYear);
+      const usageBaseYear = normalizeLocalYear(valueOf('filterYear') || data.currentThaiYear);
+      setYearField('usageYearStart', usageBaseYear - USAGE_DEFAULT_YEARS_BACK);
+      setYearField('usageYearEnd', usageBaseYear - 1);
+      YEAR_COMBO_IDS.forEach(id => renderYearCombo(id));
       setOptions('filterCategory', [{ value: ALL_CATEGORIES, label: 'ทุกประเภท' }].concat(categoryOptions), rawValueOf('filterCategory') || ALL_CATEGORIES, { preferAll: true });
       setOptions('filterGroup', [{ value: ALL_GROUPS, label: 'ทุกกลุ่มงาน' }].concat(groupOptions), rawValueOf('filterGroup') || ALL_GROUPS, { preferAll: true });
       setOptions('materialCategory', categoryOptions, valueOf('materialCategory') || (data.categories[0] && data.categories[0].categoryId), { preferFirst: true });
@@ -5250,6 +5502,81 @@
       } else {
         select.selectedIndex = 0;
       }
+    }
+
+    function setYearField(id, fallbackYear) {
+      const element = document.getElementById(id);
+      if (!element) return;
+      if (/^\d{4}$/.test(cleanLocalText(element.value))) return;
+      element.value = normalizeLocalYear(fallbackYear || getLocalThaiYear());
+    }
+
+    function yearComboOptions(currentValue) {
+      const source = state.data && Array.isArray(state.data.years) && state.data.years.length
+        ? state.data.years
+        : buildYearRange();
+      const years = source.map(year => normalizeLocalYear(year));
+      const current = Number(cleanLocalText(currentValue));
+      if (current && years.indexOf(current) < 0) years.push(current);
+      return years
+        .filter((year, index) => years.indexOf(year) === index)
+        .sort((a, b) => b - a);
+    }
+
+    function renderYearCombo(id, filterText) {
+      const list = document.getElementById(id + 'List');
+      const input = document.getElementById(id);
+      if (!list || !input) return;
+      const current = cleanLocalText(input.value);
+      const query = cleanLocalText(filterText === undefined ? '' : filterText).replace(/\D/g, '');
+      const years = yearComboOptions(current);
+      const visible = query ? years.filter(year => String(year).indexOf(query) >= 0) : years;
+      list.innerHTML = visible.length
+        ? visible.map(year => `<button type="button" class="combo-option" role="option" data-combo-value="${year}" aria-selected="${String(year) === current ? 'true' : 'false'}">${year}</button>`).join('')
+        : '<div class="combo-empty">ไม่มีปีนี้ในรายการ กด Enter เพื่อใช้ปีที่พิมพ์</div>';
+    }
+
+    function openYearCombo(id, filterText) {
+      const wrap = document.querySelector('[data-combo="' + id + '"]');
+      const list = document.getElementById(id + 'List');
+      const input = document.getElementById(id);
+      if (!wrap || !list || !input) return;
+      closeYearCombos(id);
+      renderYearCombo(id, filterText);
+      list.hidden = false;
+      wrap.classList.add('open');
+      input.setAttribute('aria-expanded', 'true');
+      const rect = input.getBoundingClientRect();
+      wrap.classList.toggle('up', rect.bottom + 330 > window.innerHeight && rect.top > 330);
+      const selected = list.querySelector('[aria-selected="true"]');
+      if (selected) selected.scrollIntoView({ block: 'center' });
+    }
+
+    function closeYearCombos(exceptId) {
+      YEAR_COMBO_IDS.forEach(id => {
+        if (id === exceptId) return;
+        const wrap = document.querySelector('[data-combo="' + id + '"]');
+        const list = document.getElementById(id + 'List');
+        const input = document.getElementById(id);
+        if (list) list.hidden = true;
+        if (wrap) wrap.classList.remove('open', 'up');
+        if (input) input.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function commitYearCombo(input, value) {
+      if (!input) return;
+      if (value !== undefined && value !== null) input.value = value;
+      closeYearCombos();
+      normalizeYearField(input);
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function normalizeYearField(element) {
+      if (!element) return;
+      const digits = cleanLocalText(element.value).replace(/\D/g, '');
+      const fallback = (state.data && state.data.currentThaiYear) || getLocalThaiYear();
+      element.value = digits.length >= 4 ? clampLocalYear(digits) : normalizeLocalYear(fallback);
     }
 
     function setDatalistOptions(id, options) {
@@ -5420,7 +5747,11 @@
       document.getElementById('viewTitle').textContent = meta[0];
       document.getElementById('viewSubtitle').textContent = '';
       const topbar = document.querySelector('.topbar');
-      if (topbar) topbar.classList.toggle('hide-filters', ['manage', 'stockedit', 'survey', 'receive', 'requisition'].includes(state.view));
+      if (topbar) {
+        topbar.classList.toggle('hide-filters', ['manage', 'stockedit', 'survey', 'receive', 'requisition'].includes(state.view));
+        topbar.classList.toggle('hide-year', state.view === 'usage');
+        closeYearCombos();
+      }
       if (!silent) drawChartsWhenReady();
       refreshIcons();
     }
@@ -6363,6 +6694,7 @@
 
     function renderUsage() {
       const rows = getUsageReportRows();
+      renderUsageRangeNote();
       document.getElementById('usageTable').innerHTML = table(['กลุ่มงาน', 'ประเภท', 'รายการ', 'หน่วย', 'ใช้ปีปัจจุบัน', 'เฉลี่ย/ปี', 'เฉลี่ย/เดือน', 'มูลค่า'], rows.map(row => [
         row.groupName,
         row.categoryName,
@@ -6380,6 +6712,21 @@
         formatNumber(row.currentQty),
         formatNumber(row.avgMonthly)
       ]), [2, 3]);
+    }
+
+    function renderUsageRangeNote() {
+      const note = document.getElementById('usageRangeNote');
+      if (!note) return;
+      const stats = (state.data && state.data.stats) || {};
+      const years = Array.isArray(stats.previousYears) ? stats.previousYears : [];
+      if (!years.length) {
+        note.textContent = '';
+        return;
+      }
+      const first = years[0];
+      const last = years[years.length - 1];
+      const range = first === last ? `ปี ${first}` : `ปี ${first} ถึง ${last}`;
+      note.textContent = `คอลัมน์ "ใช้ปีปัจจุบัน" คือปี ${stats.year || valueOf('filterYear')} ส่วน "เฉลี่ย/ปี" และ "เฉลี่ย/เดือน" คำนวณจาก${range} รวม ${years.length} ปี`;
     }
 
     function getUsageReportRows() {
@@ -6403,7 +6750,11 @@
       const year = valueOf('filterYear') || (state.data && state.data.stats ? state.data.stats.year : '') || '-';
       const category = valueOf('filterCategory') ? categoryNameById(valueOf('filterCategory')) : 'ทุกประเภท';
       const groupName = valueOf('filterGroup') || 'ทุกกลุ่มงาน';
-      return 'ปี ' + year + ' | ประเภท ' + category + ' | กลุ่มงาน ' + groupName;
+      const years = (state.data && state.data.stats && Array.isArray(state.data.stats.previousYears)) ? state.data.stats.previousYears : [];
+      const compare = years.length
+        ? ' | เฉลี่ยจากปี ' + years[0] + (years.length > 1 ? '-' + years[years.length - 1] : '') + ' (' + years.length + ' ปี)'
+        : '';
+      return 'ปี ' + year + ' | ประเภท ' + category + ' | กลุ่มงาน ' + groupName + compare;
     }
 
     function printUsageTable() {
@@ -7354,6 +7705,7 @@
         'print-survey-completion': printSurveyCompletionSummary,
         'export-survey-completion-excel': exportSurveyCompletionExcel,
         'refresh-stock': refreshStats,
+        'reset-usage-years': resetUsageYearRange,
         'load-issue-requisition': loadIssueRequisition,
         'receive-selected-requisition': receiveSelectedRequisition,
         'print-receive-requisition': printReceiveRequisition,
