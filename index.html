@@ -11,24 +11,84 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --bg: #f0faf6;
+      /* พื้นหลังและตัวอักษร */
+      --bg: #f2f5fb;
       --panel: #ffffff;
-      --ink: #18312f;
-      --muted: #637a77;
-      --line: #cfe8df;
-      --teal: #16736b;
-      --teal-soft: #e4f7f0;
-      --green: #45a577;
-      --amber: #d99a27;
-      --coral: #d85f55;
-      --blue: #3c6fb6;
-      --nav: #174b4a;
-      --mint: #d9f5ea;
-      --mint-strong: #95dec0;
-      --sky-soft: #eaf5ff;
-      --sun-soft: #fff4cf;
-      --shadow: 0 14px 34px rgba(30, 92, 76, 0.13);
+      --panel-soft: #fafbfe;
+      --ink: #2a3446;
+      --ink-soft: #4b5670;
+      --muted: #78849c;
+      --line: #e2e8f2;
+      --line-soft: #eff3f9;
+
+      /* ชุดสีพาสเทล 7 โทน: bg = พื้นอ่อน, edge = เส้นขอบ, ink = ตัวอักษร, solid = สีเข้มสำหรับกราฟ */
+      --mint-bg: #e3f6ef;
+      --mint-edge: #b6e5d2;
+      --mint-ink: #1a6a51;
+      --mint-solid: #43b78c;
+
+      --teal-bg: #ddf3f5;
+      --teal-edge: #ace2e6;
+      --teal-ink: #10646c;
+      --teal-solid: #33a4ac;
+
+      --sky-bg: #e5f0fe;
+      --sky-edge: #b9d8f8;
+      --sky-ink: #1b5a95;
+      --sky-solid: #4a91df;
+
+      --lilac-bg: #eeeafc;
+      --lilac-edge: #d3c9f4;
+      --lilac-ink: #513fa2;
+      --lilac-solid: #8874df;
+
+      --rose-bg: #ffe9ed;
+      --rose-edge: #ffc6d0;
+      --rose-ink: #a6384c;
+      --rose-solid: #ea6f82;
+
+      --peach-bg: #ffefe4;
+      --peach-edge: #ffd4ba;
+      --peach-ink: #9f5420;
+      --peach-solid: #ef9459;
+
+      --lemon-bg: #fdf4d9;
+      --lemon-edge: #f6e1a6;
+      --lemon-ink: #87630f;
+      --lemon-solid: #e4b343;
+
+      /* โทนหลักของระบบ = mint/teal */
+      --brand: #1c7f6b;
+      --brand-ink: #14655a;
+      --brand-bg: var(--mint-bg);
+      --brand-edge: var(--mint-edge);
+
+      /* ชื่อเดิมที่โค้ดส่วนอื่นยังเรียกใช้ */
+      --teal: var(--teal-ink);
+      --teal-soft: var(--teal-bg);
+      --green: var(--mint-solid);
+      --amber: var(--lemon-solid);
+      --coral: var(--rose-solid);
+      --blue: var(--sky-solid);
+      --nav: #eaf1fb;
+      --mint: var(--mint-bg);
+      --mint-strong: var(--mint-edge);
+      --sky-soft: var(--sky-bg);
+      --sun-soft: var(--lemon-bg);
+
+      --shadow: 0 10px 26px rgba(44, 62, 96, 0.08);
+      --shadow-lift: 0 16px 36px rgba(44, 62, 96, 0.12);
+      --ring: 0 0 0 3px rgba(74, 145, 223, 0.22);
     }
+
+    /* โทนสีต่อชิ้น: ตั้ง --tone-* แล้ว component เรียกใช้ได้เหมือนกันทุกที่ */
+    .tone-mint { --tone-bg: var(--mint-bg); --tone-edge: var(--mint-edge); --tone-ink: var(--mint-ink); --tone-solid: var(--mint-solid); }
+    .tone-teal { --tone-bg: var(--teal-bg); --tone-edge: var(--teal-edge); --tone-ink: var(--teal-ink); --tone-solid: var(--teal-solid); }
+    .tone-sky { --tone-bg: var(--sky-bg); --tone-edge: var(--sky-edge); --tone-ink: var(--sky-ink); --tone-solid: var(--sky-solid); }
+    .tone-lilac { --tone-bg: var(--lilac-bg); --tone-edge: var(--lilac-edge); --tone-ink: var(--lilac-ink); --tone-solid: var(--lilac-solid); }
+    .tone-rose { --tone-bg: var(--rose-bg); --tone-edge: var(--rose-edge); --tone-ink: var(--rose-ink); --tone-solid: var(--rose-solid); }
+    .tone-peach { --tone-bg: var(--peach-bg); --tone-edge: var(--peach-edge); --tone-ink: var(--peach-ink); --tone-solid: var(--peach-solid); }
+    .tone-lemon { --tone-bg: var(--lemon-bg); --tone-edge: var(--lemon-edge); --tone-ink: var(--lemon-ink); --tone-solid: var(--lemon-solid); }
 
     * {
       box-sizing: border-box;
@@ -47,6 +107,7 @@
       font-family: "Noto Sans Thai", "Sarabun", Arial, sans-serif;
       font-size: 15px;
       letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
     }
 
     button,
@@ -71,12 +132,14 @@
     }
 
     .sidebar {
-      background: linear-gradient(180deg, #174b4a 0%, #103d40 100%);
-      color: #eef7f5;
-      padding: 18px;
+      background:
+        linear-gradient(180deg, #eef4fd 0%, #eaf5f4 46%, #f4f1fc 100%);
+      color: var(--ink);
+      border-right: 1px solid #dde5f1;
+      padding: 16px 14px 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       min-width: 0;
       position: sticky;
       top: 0;
@@ -85,7 +148,7 @@
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
-      scrollbar-color: rgba(219, 245, 234, 0.45) rgba(255, 255, 255, 0.08);
+      scrollbar-color: #b9c7de rgba(255, 255, 255, 0.6);
     }
 
     .sidebar::-webkit-scrollbar {
@@ -93,19 +156,19 @@
     }
 
     .sidebar::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.6);
       border-radius: 8px;
     }
 
     .sidebar::-webkit-scrollbar-thumb {
-      background: rgba(219, 245, 234, 0.38);
+      background: #bccbe1;
       border-radius: 8px;
       border: 2px solid transparent;
       background-clip: padding-box;
     }
 
     .sidebar::-webkit-scrollbar-thumb:hover {
-      background: rgba(219, 245, 234, 0.6);
+      background: #9dafcb;
       background-clip: padding-box;
     }
 
@@ -114,62 +177,101 @@
       grid-template-columns: 44px minmax(0, 1fr);
       align-items: center;
       gap: 12px;
-      padding: 8px 4px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 6px 14px;
+      border-bottom: 1px solid #dbe4f1;
     }
 
     .brand-mark {
       width: 44px;
       height: 44px;
-      border-radius: 8px;
+      border-radius: 13px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #c9f2df 0%, #f5cf68 100%);
-      color: #10504b;
+      background: linear-gradient(140deg, #7ddcb8 0%, #4a91df 55%, #8874df 100%);
+      color: #ffffff;
       font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 14px rgba(74, 145, 223, 0.32);
     }
 
     .brand h1 {
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1.25;
       font-weight: 800;
+      color: #223049;
     }
 
     .brand p {
-      margin: 2px 0 0;
-      color: #b9d6d4;
+      margin: 3px 0 0;
+      color: var(--muted);
       font-size: 12px;
+      font-weight: 600;
     }
 
     .nav {
       display: grid;
-      gap: 6px;
+      gap: 4px;
     }
 
-    .nav button {
+    .nav button,
+    .nav .nav-link {
       display: grid;
-      grid-template-columns: 20px minmax(0, 1fr);
+      grid-template-columns: 30px minmax(0, 1fr);
       gap: 10px;
       align-items: center;
       width: 100%;
-      min-height: 42px;
-      padding: 10px 12px;
-      color: #dcefed;
+      min-height: 44px;
+      padding: 8px 10px;
+      color: var(--ink-soft);
       background: transparent;
-      border-radius: 8px;
+      border: 1px solid transparent;
+      border-radius: 12px;
       text-align: left;
+      text-decoration: none;
       font-size: 15px;
       font-weight: 700;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    /* ไอคอนนำทางอยู่ในกรอบสีพาสเทลประจำเมนู เพื่อให้กวาดตาหาเมนูได้เร็ว */
+    .nav-ico {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: var(--tone-bg, #e9eef7);
+      color: var(--tone-ink, var(--ink-soft));
+      box-shadow: inset 0 0 0 1px var(--tone-edge, #dce4f0);
+    }
+
+    .nav-ico svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2.1;
     }
 
     .nav button:hover,
-    .nav button.active {
-      background: rgba(219, 245, 234, 0.18);
-      color: #ffffff;
+    .nav .nav-link:hover {
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--ink);
     }
 
-    .nav svg,
+    .nav button.active {
+      background: #ffffff;
+      border-color: var(--tone-edge, #dce4f0);
+      color: var(--tone-ink, var(--brand-ink));
+      box-shadow: 0 6px 16px rgba(44, 62, 96, 0.1);
+    }
+
+    .nav .nav-link {
+      margin-top: 6px;
+      border-color: #dbe4f1;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
     .btn svg,
     .icon-btn svg {
       width: 18px;
@@ -186,7 +288,7 @@
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
-      scrollbar-color: #9ccbb6 #e8f3ee;
+      scrollbar-color: #b8c6dd #eef2f8;
     }
 
     .main::-webkit-scrollbar {
@@ -194,33 +296,33 @@
     }
 
     .main::-webkit-scrollbar-track {
-      background: #eef6f2;
+      background: #eef2f8;
     }
 
     .main::-webkit-scrollbar-thumb {
-      background: #9ccbb6;
+      background: #b8c6dd;
       border-radius: 8px;
-      border: 3px solid #eef6f2;
+      border: 3px solid #eef2f8;
       background-clip: padding-box;
     }
 
     .main::-webkit-scrollbar-thumb:hover {
-      background: #6fae94;
+      background: #94a7c6;
       background-clip: padding-box;
     }
 
     .topbar {
       flex-shrink: 0;
       min-height: 88px;
-      padding: 24px 28px;
+      padding: 22px 26px;
       background:
-        linear-gradient(135deg, #f7fffb 0%, #e7f8ee 58%, #ffffff 100%);
-      border-bottom: 1px solid #c6e8dc;
+        linear-gradient(115deg, #e9f3ff 0%, #eeeafc 26%, #e4f6ef 58%, #fff3e6 82%, #ffffff 100%);
+      border-bottom: 1px solid #dee6f2;
       display: grid;
       grid-template-columns: minmax(220px, 1fr) auto;
       gap: 24px;
       align-items: center;
-      box-shadow: 0 8px 24px rgba(43, 111, 88, 0.08);
+      box-shadow: 0 6px 20px rgba(44, 62, 96, 0.06);
     }
 
     .topbar > div {
@@ -232,8 +334,8 @@
       font-size: clamp(23px, 2.1vw, 34px);
       line-height: 1.16;
       font-weight: 800;
-      color: #105e55;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      color: #263248;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
     }
 
     .topbar p {
@@ -295,12 +397,12 @@
       place-items: center;
       padding: 0;
       background: transparent;
-      color: #47746e;
-      border-radius: 0 8px 8px 0;
+      color: var(--muted);
+      border-radius: 0 10px 10px 0;
     }
 
     .combo-toggle:hover {
-      color: var(--teal);
+      color: var(--sky-ink);
     }
 
     .combo-caret {
@@ -328,8 +430,8 @@
       padding: 4px;
       background: #ffffff;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      box-shadow: 0 14px 30px rgba(30, 92, 76, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 16px 34px rgba(44, 62, 96, 0.16);
       scrollbar-width: thin;
     }
 
@@ -357,11 +459,11 @@
 
     .combo-option:hover,
     .combo-option.active {
-      background: var(--teal-soft);
+      background: var(--sky-bg);
     }
 
     .combo-option[aria-selected="true"] {
-      background: var(--teal);
+      background: var(--sky-solid);
       color: #ffffff;
     }
 
@@ -394,7 +496,7 @@
     }
 
     .field label {
-      color: #47746e;
+      color: var(--ink-soft);
       font-size: 13px;
       font-weight: 700;
     }
@@ -403,30 +505,32 @@
     select,
     textarea {
       width: 100%;
-      min-height: 38px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      min-height: 40px;
+      border: 1px solid #d8e1ee;
+      border-radius: 10px;
       background: #ffffff;
       color: var(--ink);
-      padding: 8px 10px;
+      padding: 8px 11px;
       outline: none;
       font-size: 15px;
       font-weight: 500;
       text-overflow: ellipsis;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     select {
       padding-right: 32px;
     }
 
-    .topbar select {
+    .topbar select,
+    .topbar .combo > input {
       min-height: 46px;
-      border-color: #bde2d3;
-      background: #ffffff;
-      color: #18312f;
+      border-color: #cfdcee;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink);
       font-size: 16px;
       font-weight: 600;
-      box-shadow: 0 8px 20px rgba(41, 103, 84, 0.07);
+      box-shadow: 0 6px 16px rgba(44, 62, 96, 0.07);
     }
 
     textarea {
@@ -437,8 +541,13 @@
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(69, 165, 119, 0.18);
+      border-color: var(--sky-solid);
+      box-shadow: var(--ring);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #a3aec2;
     }
 
     .content {
@@ -480,7 +589,7 @@
     .metric {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 16px;
       box-shadow: var(--shadow);
     }
 
@@ -505,10 +614,22 @@
 
     .panel h3 {
       margin: 0;
-      font-size: 20px;
+      font-size: 19px;
       line-height: 1.3;
-      color: #155f58;
+      color: #29344a;
       font-weight: 800;
+    }
+
+    /* หัวข้อการ์ดมีขีดสีพาสเทลนำหน้า ช่วยแยกบล็อกเนื้อหาออกจากกัน */
+    .panel-head h3::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 17px;
+      margin-right: 9px;
+      vertical-align: -2px;
+      border-radius: 3px;
+      background: var(--tone-solid, var(--mint-solid));
     }
 
     .panel-actions,
@@ -521,44 +642,61 @@
     }
 
     .metric {
-      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      padding: 17px 18px;
       display: grid;
-      grid-template-columns: 48px minmax(0, 1fr);
+      grid-template-columns: 50px minmax(0, 1fr);
       gap: 14px;
       align-items: center;
       min-height: 104px;
-      border-left: 5px solid var(--teal);
-      background: linear-gradient(135deg, #ffffff 0%, #f5fffa 100%);
+      border-color: var(--tone-edge, var(--mint-edge));
+      background:
+        radial-gradient(circle at 100% 0%, var(--tone-bg, var(--mint-bg)) 0%, rgba(255, 255, 255, 0) 62%),
+        #ffffff;
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
     }
 
-    .metric.green {
-      border-left-color: var(--green);
+    /* แถบสีพาสเทลด้านซ้าย ทำหน้าที่เป็นรหัสสีของ KPI แต่ละตัว */
+    .metric::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--tone-solid, var(--mint-solid));
     }
 
-    .metric.amber {
-      border-left-color: var(--amber);
-    }
-
-    .metric.coral {
-      border-left-color: var(--coral);
+    .metric:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lift);
     }
 
     .metric-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #dcf7ee 0%, #eefcf7 100%);
-      color: var(--teal);
+      background: var(--tone-bg, var(--mint-bg));
+      color: var(--tone-ink, var(--mint-ink));
+      box-shadow: inset 0 0 0 1px var(--tone-edge, var(--mint-edge));
+    }
+
+    .metric-icon svg {
+      width: 23px;
+      height: 23px;
+      stroke-width: 2.1;
     }
 
     .metric strong {
       display: block;
-      font-size: 29px;
+      font-size: 28px;
       line-height: 1.2;
-      color: #17343a;
+      color: #232e42;
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
     }
 
     .metric span {
@@ -567,52 +705,100 @@
       font-weight: 700;
     }
 
+    /* ชื่อคลาสสีเดิมของ KPI ยังใช้ได้ แต่แมปไปยังโทนพาสเทลชุดใหม่ */
+    .metric.green { --tone-bg: var(--mint-bg); --tone-edge: var(--mint-edge); --tone-ink: var(--mint-ink); --tone-solid: var(--mint-solid); }
+    .metric.amber { --tone-bg: var(--lemon-bg); --tone-edge: var(--lemon-edge); --tone-ink: var(--lemon-ink); --tone-solid: var(--lemon-solid); }
+    .metric.coral { --tone-bg: var(--rose-bg); --tone-edge: var(--rose-edge); --tone-ink: var(--rose-ink); --tone-solid: var(--rose-solid); }
+
+    /* ปุ่มพาสเทล: พื้นอ่อน ขอบสีเดียวกัน ตัวอักษรสีเข้มของโทนนั้น อ่านง่ายและไม่แย่งสายตากับข้อมูล */
     .btn {
       display: inline-grid;
       grid-template-columns: 18px auto;
       gap: 8px;
       align-items: center;
-      min-height: 38px;
-      border-radius: 8px;
-      padding: 9px 12px;
-      background: linear-gradient(135deg, #238276 0%, #44a574 100%);
-      color: #ffffff;
+      min-height: 40px;
+      border-radius: 11px;
+      padding: 9px 14px;
+      background: var(--mint-bg);
+      border: 1px solid var(--mint-edge);
+      color: var(--mint-ink);
       font-weight: 800;
       white-space: nowrap;
+      text-decoration: none;
+      transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    }
+
+    /* ลิงก์ที่ใช้หน้าตาแบบปุ่ม ต้องไม่เอาสีลิงก์และเส้นใต้ของเบราว์เซอร์มาใช้ */
+    a.btn,
+    a.btn:visited,
+    a.btn:hover {
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      filter: brightness(0.97);
+      box-shadow: 0 4px 12px rgba(44, 62, 96, 0.1);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn:focus-visible,
+    .icon-btn:focus-visible,
+    .nav button:focus-visible,
+    .nav .nav-link:focus-visible {
+      outline: none;
+      box-shadow: var(--ring);
     }
 
     .btn.secondary {
-      background: #eef8f4;
-      color: var(--ink);
-      border: 1px solid var(--line);
+      background: #f3f6fb;
+      border-color: #dde5f1;
+      color: var(--ink-soft);
     }
 
-    .btn.green {
-      background: linear-gradient(135deg, #3f9d72 0%, #67bd8f 100%);
-    }
+    .btn.green { background: var(--mint-bg); border-color: var(--mint-edge); color: var(--mint-ink); }
+    .btn.teal { background: var(--teal-bg); border-color: var(--teal-edge); color: var(--teal-ink); }
+    .btn.sky { background: var(--sky-bg); border-color: var(--sky-edge); color: var(--sky-ink); }
+    .btn.lilac { background: var(--lilac-bg); border-color: var(--lilac-edge); color: var(--lilac-ink); }
+    .btn.amber { background: var(--lemon-bg); border-color: var(--lemon-edge); color: var(--lemon-ink); }
+    .btn.peach { background: var(--peach-bg); border-color: var(--peach-edge); color: var(--peach-ink); }
+    .btn.coral { background: var(--rose-bg); border-color: var(--rose-edge); color: var(--rose-ink); }
 
-    .btn.amber {
-      background: var(--amber);
-      color: #1d2433;
-    }
-
-    .btn.coral {
-      background: var(--coral);
+    /* ปุ่มยืนยันงานหลัก ใช้สีทึบเพื่อให้เด่นกว่าปุ่มพาสเทลอื่นในการ์ดเดียวกัน */
+    .btn.primary {
+      background: linear-gradient(135deg, #1f8a72 0%, #35a4ac 100%);
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(31, 138, 114, 0.26);
     }
 
     .icon-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       display: inline-grid;
       place-items: center;
-      background: #eef8f4;
-      color: var(--ink);
-      border: 1px solid var(--line);
+      background: #f3f6fb;
+      color: var(--ink-soft);
+      border: 1px solid #dde5f1;
+    }
+
+    .icon-btn:hover {
+      background: var(--sky-bg);
+      border-color: var(--sky-edge);
+      color: var(--sky-ink);
     }
 
     .icon-btn.danger {
-      color: var(--coral);
+      color: var(--rose-ink);
+    }
+
+    .icon-btn.danger:hover {
+      background: var(--rose-bg);
+      border-color: var(--rose-edge);
+      color: var(--rose-ink);
     }
 
     .table-link {
@@ -620,7 +806,8 @@
       padding: 0;
       min-height: 0;
       background: transparent;
-      color: var(--teal);
+      border: 0;
+      color: var(--sky-ink);
       font-weight: 700;
       text-align: left;
       text-decoration: underline;
@@ -636,10 +823,10 @@
     }
 
     .detail-item {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 9px 10px;
-      background: #f7fffb;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 9px 11px;
+      background: var(--panel-soft);
       min-width: 0;
     }
 
@@ -659,9 +846,26 @@
     .table-wrap {
       overflow: auto;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 13px;
       background: #ffffff;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      scrollbar-width: thin;
+      scrollbar-color: #c6d2e5 #f1f4fa;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      width: 11px;
+      height: 11px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+      background: #f1f4fa;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #c6d2e5;
+      border-radius: 8px;
+      border: 3px solid #f1f4fa;
+      background-clip: padding-box;
     }
 
     .monthly-summary-table {
@@ -1026,23 +1230,33 @@
 
     th,
     td {
-      padding: 9px 10px;
-      border-bottom: 1px solid var(--line);
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line-soft);
       text-align: left;
       vertical-align: middle;
       overflow-wrap: break-word;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     th {
-      background: linear-gradient(180deg, #e6f8f1 0%, #d9f2e9 100%);
-      color: #174e4b;
+      background: linear-gradient(180deg, #f1f5fc 0%, #e7edf8 100%);
+      color: #38455e;
       font-weight: 800;
       white-space: nowrap;
       position: sticky;
       top: 0;
       z-index: 1;
+      box-shadow: inset 0 -1px 0 #d9e2f0;
+    }
+
+    /* แถบสลับสีอ่อนมาก ช่วยกวาดตาตามแถวในตารางยาวได้ไม่หลุด */
+    tbody tr:nth-child(even) td {
+      background: #fafcff;
+    }
+
+    tbody tr:hover td {
+      background: var(--sky-bg);
     }
 
     tr:last-child td {
@@ -1110,20 +1324,23 @@
 
     .analysis-item {
       min-width: 0;
-      padding-top: 10px;
-      border-top: 3px solid var(--line);
+      padding: 11px 13px;
+      border: 1px solid var(--line-soft);
+      border-top: 3px solid var(--sky-solid);
+      border-radius: 12px;
+      background: var(--panel-soft);
     }
 
     .analysis-item.green {
-      border-color: var(--green);
+      border-top-color: var(--mint-solid);
     }
 
     .analysis-item.amber {
-      border-color: var(--amber);
+      border-top-color: var(--lemon-solid);
     }
 
     .analysis-item.coral {
-      border-color: var(--coral);
+      border-top-color: var(--rose-solid);
     }
 
     .analysis-item .pill {
@@ -1138,28 +1355,23 @@
       display: inline-grid;
       min-height: 26px;
       align-items: center;
-      border-radius: 8px;
-      padding: 3px 8px;
-      background: #edf3f7;
-      color: var(--ink);
+      border-radius: 999px;
+      padding: 3px 11px;
+      background: #eef2f8;
+      border: 1px solid #dee5f0;
+      color: var(--ink-soft);
+      font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
     }
 
-    .pill.green {
-      background: #e6f4ec;
-      color: #286747;
-    }
-
-    .pill.amber {
-      background: #fff2d8;
-      color: #7a4b00;
-    }
-
-    .pill.coral {
-      background: #fdeceb;
-      color: #a93832;
-    }
+    .pill.green { background: var(--mint-bg); border-color: var(--mint-edge); color: var(--mint-ink); }
+    .pill.teal { background: var(--teal-bg); border-color: var(--teal-edge); color: var(--teal-ink); }
+    .pill.sky { background: var(--sky-bg); border-color: var(--sky-edge); color: var(--sky-ink); }
+    .pill.lilac { background: var(--lilac-bg); border-color: var(--lilac-edge); color: var(--lilac-ink); }
+    .pill.amber { background: var(--lemon-bg); border-color: var(--lemon-edge); color: var(--lemon-ink); }
+    .pill.peach { background: var(--peach-bg); border-color: var(--peach-edge); color: var(--peach-ink); }
+    .pill.coral { background: var(--rose-bg); border-color: var(--rose-edge); color: var(--rose-ink); }
 
     .kpi-rail {
       display: grid;
@@ -1186,10 +1398,10 @@
 
     .heatmap-cell {
       min-height: 42px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 6px 8px;
-      background: #f8fbfc;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 6px 9px;
+      background: var(--panel-soft);
       font-weight: 700;
       overflow: hidden;
     }
@@ -1208,19 +1420,23 @@
       font-weight: 600;
     }
 
+    /* ไล่ระดับความเข้มจากฟ้าอ่อน > เขียวมิ้นต์ > ส้มพีช เพื่อบอกความหนักของการตัดจ่าย */
     .heatmap-cell.level-1 {
-      background: #e8f2f0;
-      border-color: #bcd9d4;
+      background: var(--sky-bg);
+      border-color: var(--sky-edge);
+      color: var(--sky-ink);
     }
 
     .heatmap-cell.level-2 {
-      background: #d3e7e3;
-      border-color: #8fc1b9;
+      background: var(--mint-bg);
+      border-color: var(--mint-edge);
+      color: var(--mint-ink);
     }
 
     .heatmap-cell.level-3 {
-      background: #f9e4c4;
-      border-color: #e7bd73;
+      background: var(--peach-bg);
+      border-color: var(--peach-edge);
+      color: var(--peach-ink);
     }
 
     #stockMovementTable table,
@@ -1410,21 +1626,37 @@
       display: grid;
       gap: 2px;
       min-height: 70px;
-      padding: 10px 12px;
-      border: 1px solid #e4edf2;
-      border-radius: 8px;
-      background: #f8fbfc;
+      padding: 11px 13px;
+      border: 1px solid var(--line-soft);
+      border-top: 3px solid var(--tone-solid, var(--mint-solid));
+      border-radius: 12px;
+      background: var(--panel-soft);
     }
 
     .summary-stat strong {
       font-size: 20px;
       line-height: 1.25;
+      color: #232e42;
+      font-variant-numeric: tabular-nums;
     }
 
     .summary-stat span {
       color: var(--muted);
       font-weight: 600;
     }
+
+    /* ไล่สีพาสเทลตามลำดับช่อง KPI ย่อย ให้เทียบตัวเลขข้างกันได้ง่าย */
+    .summary-stats .summary-stat:nth-child(4n+1),
+    .kpi-rail .summary-stat:nth-child(4n+1) { border-top-color: var(--mint-solid); }
+
+    .summary-stats .summary-stat:nth-child(4n+2),
+    .kpi-rail .summary-stat:nth-child(4n+2) { border-top-color: var(--sky-solid); }
+
+    .summary-stats .summary-stat:nth-child(4n+3),
+    .kpi-rail .summary-stat:nth-child(4n+3) { border-top-color: var(--lemon-solid); }
+
+    .summary-stats .summary-stat:nth-child(4n+4),
+    .kpi-rail .summary-stat:nth-child(4n+4) { border-top-color: var(--lilac-solid); }
 
     .category-badges {
       display: flex;
@@ -1438,11 +1670,11 @@
       align-items: center;
       gap: 6px;
       max-width: 100%;
-      padding: 6px 9px;
-      border: 1px solid #cfe0e3;
-      border-radius: 8px;
-      background: #eef7f5;
-      color: #21484e;
+      padding: 6px 11px;
+      border: 1px solid var(--teal-edge);
+      border-radius: 999px;
+      background: var(--teal-bg);
+      color: var(--teal-ink);
       font-weight: 700;
     }
 
@@ -1454,7 +1686,7 @@
     }
 
     .category-badge strong {
-      color: var(--teal);
+      color: var(--teal-ink);
     }
 
     .summary-visuals {
@@ -1469,7 +1701,7 @@
     }
 
     .danger-text {
-      color: var(--coral);
+      color: var(--rose-ink);
     }
 
     .compact-form {
@@ -1624,10 +1856,10 @@
     }
 
     .links a {
-      color: var(--teal);
+      color: var(--sky-ink);
       font-weight: 700;
       text-decoration: none;
-      border-bottom: 1px solid rgba(31, 111, 120, 0.25);
+      border-bottom: 1px solid rgba(27, 90, 149, 0.3);
     }
 
     .empty {
@@ -1643,13 +1875,14 @@
       bottom: 22px;
       display: none;
       max-width: min(420px, calc(100vw - 44px));
-      padding: 12px 14px;
-      border-radius: 8px;
-      background: #173f48;
+      padding: 13px 16px;
+      border-radius: 12px;
+      background: #313d55;
       color: #ffffff;
-      box-shadow: var(--shadow);
+      box-shadow: 0 14px 32px rgba(28, 38, 58, 0.3);
       z-index: 20;
       font-weight: 600;
+      line-height: 1.5;
     }
 
     .runtime-warning {
@@ -1670,9 +1903,9 @@
       width: min(680px, 100%);
       background: #ffffff;
       border: 1px solid var(--line);
-      border-left: 6px solid var(--coral);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
+      border-left: 6px solid var(--rose-solid);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lift);
       padding: 22px;
     }
 
@@ -1688,9 +1921,11 @@
     }
 
     .runtime-warning-box code {
-      background: #eef3f7;
+      background: var(--sky-bg);
+      color: var(--sky-ink);
       border-radius: 6px;
       padding: 2px 6px;
+      overflow-wrap: anywhere;
     }
 
     .runtime-warning-actions {
@@ -1700,16 +1935,24 @@
       margin-top: 16px;
     }
 
+    .runtime-warning-actions a.secondary {
+      background: #f3f6fb;
+      border: 1px solid #dde5f1;
+      color: var(--ink-soft);
+      box-shadow: none;
+    }
+
     .runtime-warning-actions a {
       display: inline-grid;
-      min-height: 40px;
+      min-height: 42px;
       align-items: center;
-      border-radius: 8px;
-      background: var(--teal);
+      border-radius: 11px;
+      background: linear-gradient(135deg, #1f8a72 0%, #35a4ac 100%);
       color: #ffffff;
-      padding: 9px 14px;
-      font-weight: 700;
+      padding: 9px 16px;
+      font-weight: 800;
       text-decoration: none;
+      box-shadow: 0 6px 16px rgba(31, 138, 114, 0.26);
     }
 
     .auth-modal {
@@ -1730,9 +1973,9 @@
       width: min(430px, 100%);
       background: #ffffff;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      padding: 18px;
+      border-radius: 16px;
+      box-shadow: 0 24px 56px rgba(20, 30, 50, 0.28);
+      padding: 20px;
     }
 
     .auth-box p {
@@ -1749,6 +1992,115 @@
     .busy {
       opacity: 0.55;
       pointer-events: none;
+    }
+
+    /* ==== นำเข้าไฟล์ Excel ==== */
+    .dropzone {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 26px 20px;
+      border: 2px dashed var(--sky-edge);
+      border-radius: 15px;
+      background: linear-gradient(160deg, var(--sky-bg) 0%, #ffffff 78%);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    }
+
+    .dropzone:hover,
+    .dropzone:focus-visible {
+      outline: none;
+      border-color: var(--sky-solid);
+      background: linear-gradient(160deg, #dbebfe 0%, #ffffff 78%);
+    }
+
+    .dropzone.dragging {
+      border-color: var(--mint-solid);
+      background: linear-gradient(160deg, var(--mint-bg) 0%, #ffffff 78%);
+      transform: scale(1.005);
+    }
+
+    .dropzone strong {
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    .dropzone .status {
+      max-width: 620px;
+      font-size: 14px;
+    }
+
+    .dropzone-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: var(--sky-ink);
+      box-shadow: inset 0 0 0 1px var(--sky-edge), 0 6px 14px rgba(74, 145, 223, 0.16);
+    }
+
+    .dropzone-icon svg {
+      width: 25px;
+      height: 25px;
+      stroke-width: 2;
+    }
+
+    .import-status:not(:empty) {
+      margin-top: 14px;
+      padding: 11px 13px;
+      border: 1px solid var(--line-soft);
+      border-left: 4px solid var(--sky-solid);
+      border-radius: 11px;
+      background: var(--panel-soft);
+    }
+
+    .import-status.ok:not(:empty) {
+      border-left-color: var(--mint-solid);
+      background: var(--mint-bg);
+      color: var(--mint-ink);
+    }
+
+    .import-status.warn:not(:empty) {
+      border-left-color: var(--lemon-solid);
+      background: var(--lemon-bg);
+      color: var(--lemon-ink);
+    }
+
+    .import-status.error:not(:empty) {
+      border-left-color: var(--rose-solid);
+      background: var(--rose-bg);
+      color: var(--rose-ink);
+    }
+
+    .import-preview:not(:empty) {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .import-sheet-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    #importActions {
+      margin-top: 14px;
+    }
+
+    #importActions[hidden] {
+      display: none;
+    }
+
+    .import-preview-table {
+      max-height: min(42vh, 400px);
+    }
+
+    .import-preview-table table {
+      min-width: 720px;
     }
 
     @media (max-width: 1440px) {
@@ -1932,19 +2284,21 @@
         </div>
       </div>
       <nav class="nav">
-        <button type="button" data-view="overview"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></button>
-        <button type="button" data-view="executive"><i data-lucide="briefcase-business"></i><span>วิเคราะห์สำหรับผู้บริหาร</span></button>
-        <button type="button" data-view="manage"><i data-lucide="package-plus"></i><span>เพิ่ม/ลบ รายการวัสดุ</span></button>
-        <button type="button" data-view="stockedit"><i data-lucide="clipboard-pen-line"></i><span>เพิ่ม/ลบ วัสดุคงคลัง</span></button>
-        <button type="button" data-view="stock"><i data-lucide="warehouse"></i><span>Stock วัสดุคงคลัง</span></button>
-        <button type="button" data-view="survey"><i data-lucide="clipboard-list"></i><span>แบบสำรวจรายปี</span></button>
-        <button type="button" data-view="requisition"><i data-lucide="file-pen-line"></i><span>การเบิกวัสดุ</span></button>
-        <button type="button" data-view="receive"><i data-lucide="inbox"></i><span>รับใบเบิก / ตัดจ่ายวัสดุ</span></button>
-        <button type="button" data-view="usage"><i data-lucide="calculator"></i><span>อัตราการใช้</span></button>
-        <button type="button" data-view="value"><i data-lucide="circle-dollar-sign"></i><span>สรุปมูลค่า</span></button>
-        <button type="button" data-view="charts"><i data-lucide="bar-chart-3"></i><span>กราฟสรุป</span></button>
-        <button type="button" data-view="export"><i data-lucide="folder-sync"></i><span>นำเข้า/ส่งออก</span></button>
-        <button type="button" data-action="open-google-sheet"><i data-lucide="file-spreadsheet"></i><span>เปิด Google Sheet</span></button>
+        <button type="button" class="tone-mint" data-view="overview"><span class="nav-ico"><i data-lucide="layout-dashboard"></i></span><span>Dashboard</span></button>
+        <button type="button" class="tone-lilac" data-view="executive"><span class="nav-ico"><i data-lucide="briefcase-business"></i></span><span>วิเคราะห์สำหรับผู้บริหาร</span></button>
+        <button type="button" class="tone-sky" data-view="manage"><span class="nav-ico"><i data-lucide="package-plus"></i></span><span>เพิ่ม/ลบ รายการวัสดุ</span></button>
+        <button type="button" class="tone-sky" data-view="stockedit"><span class="nav-ico"><i data-lucide="clipboard-pen-line"></i></span><span>เพิ่ม/ลบ วัสดุคงคลัง</span></button>
+        <button type="button" class="tone-teal" data-view="stock"><span class="nav-ico"><i data-lucide="warehouse"></i></span><span>Stock วัสดุคงคลัง</span></button>
+        <button type="button" class="tone-lemon" data-view="survey"><span class="nav-ico"><i data-lucide="clipboard-list"></i></span><span>แบบสำรวจรายปี</span></button>
+        <button type="button" class="tone-peach" data-view="requisition"><span class="nav-ico"><i data-lucide="file-pen-line"></i></span><span>การเบิกวัสดุ</span></button>
+        <button type="button" class="tone-peach" data-view="receive"><span class="nav-ico"><i data-lucide="inbox"></i></span><span>รับใบเบิก / ตัดจ่ายวัสดุ</span></button>
+        <button type="button" class="tone-rose" data-view="usage"><span class="nav-ico"><i data-lucide="calculator"></i></span><span>อัตราการใช้</span></button>
+        <button type="button" class="tone-lemon" data-view="value"><span class="nav-ico"><i data-lucide="circle-dollar-sign"></i></span><span>สรุปมูลค่า</span></button>
+        <button type="button" class="tone-lilac" data-view="charts"><span class="nav-ico"><i data-lucide="bar-chart-3"></i></span><span>กราฟสรุป</span></button>
+        <button type="button" class="tone-mint" data-view="export"><span class="nav-ico"><i data-lucide="folder-sync"></i></span><span>นำเข้า/ส่งออก</span></button>
+        <a class="nav-link tone-teal" id="navGoogleSheetLink" href="https://docs.google.com/spreadsheets/d/1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM/edit" target="_blank" rel="noopener noreferrer"><span class="nav-ico"><i data-lucide="external-link"></i></span><span>เปิด Google Sheet</span></a>
+        <!-- ซ่อนอัตโนมัติเมื่อเปิดจาก Apps Script อยู่แล้ว ดู syncWebAppLinks() -->
+        <a class="nav-link tone-lilac" id="navWebAppLink" href="#" target="_blank" rel="noopener noreferrer" hidden><span class="nav-ico"><i data-lucide="cloud"></i></span><span>เปิดเว็บแอป (บันทึกลงชีตได้)</span></a>
       </nav>
     </aside>
 
@@ -1977,7 +2331,7 @@
       </header>
 
       <section class="content">
-        <section class="view active" id="view-overview">
+        <section class="view active tone-mint" id="view-overview">
           <div class="grid four" id="metricGrid"></div>
           <div class="grid two">
             <div class="panel">
@@ -2011,7 +2365,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-manage">
+        <section class="view tone-sky" id="view-manage">
           <div class="grid manage-grid">
             <div class="panel manage-panel category-panel">
               <div class="panel-head">
@@ -2138,7 +2492,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-survey">
+        <section class="view tone-lemon" id="view-survey">
           <div class="panel">
             <div class="panel-head">
               <h3>แบบสำรวจพัสดุรายปี</h3>
@@ -2181,7 +2535,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-stock">
+        <section class="view tone-teal" id="view-stock">
           <div class="grid four" id="stockMetricGrid"></div>
           <div class="grid two">
             <div class="panel">
@@ -2226,7 +2580,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-stockedit">
+        <section class="view tone-sky" id="view-stockedit">
           <div class="grid four" id="stockEditMetricGrid"></div>
           <div class="panel stock-edit-panel">
             <div class="panel-head">
@@ -2326,7 +2680,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-receive">
+        <section class="view tone-peach" id="view-receive">
           <div class="grid four" id="receiveMetricGrid"></div>
           <div class="panel">
             <div class="panel-head">
@@ -2433,7 +2787,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-requisition">
+        <section class="view tone-peach" id="view-requisition">
           <div class="grid two">
             <div class="panel">
               <div class="panel-head">
@@ -2534,7 +2888,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-usage">
+        <section class="view tone-rose" id="view-usage">
           <div class="panel">
             <div class="panel-head">
               <h3>อัตราการใช้</h3>
@@ -2568,7 +2922,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-charts">
+        <section class="view tone-lilac" id="view-charts">
           <div class="grid two">
             <div class="panel">
               <div class="panel-head">
@@ -2585,7 +2939,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-value">
+        <section class="view tone-lemon" id="view-value">
           <div class="grid two">
             <div class="panel">
               <div class="panel-head">
@@ -2616,7 +2970,7 @@
           </div>
         </section>
 
-        <section class="view" id="view-executive">
+        <section class="view tone-lilac" id="view-executive">
           <div class="panel">
             <div class="panel-head">
               <h3>Dashboard ผู้บริหาร</h3>
@@ -2753,25 +3107,64 @@
           </div>
         </section>
 
-        <section class="view" id="view-export">
+        <section class="view tone-mint" id="view-export">
+          <div class="panel tone-sky">
+            <div class="panel-head">
+              <h3>นำเข้าไฟล์ Excel จากเครื่อง</h3>
+              <div class="panel-actions">
+                <span class="pill sky" id="importModeBadge">กำลังตรวจโหมดการเปิด</span>
+              </div>
+            </div>
+            <p class="range-note">รองรับไฟล์ <strong>.xlsx .xlsm .xls .csv</strong> โครงสร้างเดียวกับ <strong>1.สำรวจรายการวัสดุทั่วไป.xlsx</strong> คือชีตหมวดวัสดุตั้งชื่อขึ้นต้นด้วยเลขลำดับและจุด เช่น <code>1.วัสดุสำนักงาน</code> และมีชีต <code>กลุ่มงาน</code> กับ <code>รายชื่อผู้เบิก</code> ประกอบ</p>
+
+            <!-- ลากไฟล์มาวาง หรือกดเพื่อเลือกไฟล์ ทั้งสองทางเข้าฟังก์ชัน handleImportFiles เหมือนกัน -->
+            <div class="dropzone" id="importDropzone" tabindex="0" role="button" aria-controls="importFileInput" aria-label="เลือกหรือลากไฟล์ Excel มาวางที่นี่">
+              <span class="dropzone-icon"><i data-lucide="file-up"></i></span>
+              <strong>ลากไฟล์ Excel มาวางที่นี่ หรือกดเพื่อเลือกไฟล์</strong>
+              <span class="status">ระบบจะอ่านไฟล์ในเครื่องก่อน แล้วแสดงตัวอย่างข้อมูลให้ตรวจ ก่อนกดยืนยันนำเข้า</span>
+              <input type="file" id="importFileInput" accept=".xlsx,.xlsm,.xls,.csv" hidden>
+            </div>
+
+            <div class="import-status status" id="importStatus"></div>
+            <div class="import-preview" id="importPreview"></div>
+            <div class="form-actions" id="importActions" hidden>
+              <button type="button" class="btn primary" data-action="confirm-import-workbook"><i data-lucide="database-backup"></i><span>ยืนยันนำเข้าข้อมูล</span></button>
+              <button type="button" class="btn secondary" data-action="cancel-import-workbook"><i data-lucide="x"></i><span>ยกเลิก</span></button>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn secondary" data-action="clear-imported-workbook"><i data-lucide="eraser"></i><span>ล้างข้อมูลนำเข้า (โหมดเปิดไฟล์ตรง)</span></button>
+            </div>
+          </div>
+
           <div class="grid three">
-            <div class="panel">
+            <div class="panel tone-teal">
               <div class="panel-head">
-                <h3>ตั้งค่าระบบ</h3>
+                <h3>เปิดระบบ</h3>
               </div>
-              <button type="button" class="btn green" data-action="setup-system"><i data-lucide="settings"></i><span>ตั้งค่าครั้งแรก</span></button>
+              <p class="range-note">เปิดชีตต้นทางเพื่อตรวจหรือแก้ข้อมูลโดยตรง หรือเปิดเว็บแอปที่ deploy ไว้ ระบบจะเปิดในแท็บใหม่</p>
+              <div class="form-actions">
+                <a class="btn teal" id="exportGoogleSheetLink" href="https://docs.google.com/spreadsheets/d/1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM/edit" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i><span>เปิด Google Sheet</span></a>
+                <a class="btn lilac" id="exportWebAppLink" href="#" target="_blank" rel="noopener noreferrer"><i data-lucide="cloud"></i><span>เปิดเว็บแอป</span></a>
+              </div>
             </div>
-            <div class="panel">
+            <div class="panel tone-lemon">
               <div class="panel-head">
-                <h3>นำเข้า</h3>
+                <h3>ตั้งค่า / นำเข้าจากชีตเดิม</h3>
               </div>
-              <button type="button" class="btn amber" data-action="import-legacy"><i data-lucide="folder-input"></i><span>นำเข้าจากชีตเดิม</span></button>
+              <p class="range-note">ใช้เมื่อข้อมูลอยู่ในชีตของ Google Sheet เล่มนี้แล้ว ไม่ต้องอัปโหลดไฟล์</p>
+              <div class="form-actions">
+                <button type="button" class="btn green" data-action="setup-system"><i data-lucide="settings"></i><span>ตั้งค่าครั้งแรก</span></button>
+                <button type="button" class="btn amber" data-action="import-legacy"><i data-lucide="folder-input"></i><span>นำเข้าจากชีตเดิม</span></button>
+              </div>
             </div>
-            <div class="panel">
+            <div class="panel tone-lilac">
               <div class="panel-head">
                 <h3>ส่งออก</h3>
               </div>
-              <button type="button" class="btn" data-action="export-excel"><i data-lucide="file-spreadsheet"></i><span>ส่งออก Excel แยกกลุ่มงาน</span></button>
+              <p class="range-note">สร้างไฟล์ Excel สรุปแยกตามกลุ่มงาน</p>
+              <div class="form-actions">
+                <button type="button" class="btn lilac" data-action="export-excel"><i data-lucide="file-spreadsheet"></i><span>ส่งออก Excel แยกกลุ่มงาน</span></button>
+              </div>
               <div class="links" id="exportLinks"></div>
             </div>
           </div>
@@ -2809,10 +3202,12 @@
       <h2>อ่านข้อมูลจาก Google Sheet ไม่สำเร็จ</h2>
       <p>หากเปิดจากไฟล์โดยตรง ระบบจะอ่านข้อมูลผ่าน Google Visualization endpoint ของชีตที่แชร์ไว้</p>
       <p>ถ้าข้อมูลไม่มา ให้ตรวจสิทธิ์แชร์ของ Google Sheet หรือเปิดผ่านเมนู <code>ระบบพัสดุทั่วไป &gt; เปิด Dashboard</code></p>
+      <p>วิธีที่ใช้งานได้ครบที่สุดคือเปิดผ่านเว็บแอปที่ deploy ไว้ เพราะบันทึกกลับ Google Sheet ได้จริง</p>
       <p>Google Sheet ID ที่ตั้งไว้คือ <code>1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM</code></p>
       <p>หน้าที่ถูกต้องจะไม่ขึ้นต้นด้วย <code>D:/</code> ในช่องที่อยู่ของเบราว์เซอร์</p>
       <div class="runtime-warning-actions">
-        <a href="https://docs.google.com/spreadsheets/d/1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM/edit" target="_blank">เปิด Google Sheet</a>
+        <a id="runtimeWebAppLink" href="#" target="_blank" rel="noopener noreferrer">เปิดเว็บแอป</a>
+        <a id="runtimeGoogleSheetLink" class="secondary" href="https://docs.google.com/spreadsheets/d/1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM/edit" target="_blank" rel="noopener noreferrer">เปิด Google Sheet</a>
       </div>
     </div>
   </div>
@@ -2839,6 +3234,25 @@
     let pendingAdminAuth = null;
 
     const APP_SPREADSHEET_ID = '1QZTNT5HbPGWnEb12m55g2wzzVyLwUsJWRe9xuvhHfoM';
+
+    /* URL ของ Web App ที่ deploy ไว้ ใช้ตอนเปิดไฟล์ตรงจากเครื่อง เพื่อกระโดดไปหน้าที่บันทึกลง Google Sheet ได้จริง
+       เวลาเปิดจาก Apps Script อยู่แล้ว ระบบจะแทนที่ด้วย URL จริงจาก ScriptApp (ดู syncWebAppLinks)
+       ถ้า deploy ใหม่จนได้ URL ใหม่ ให้แก้ทั้งที่นี่ และที่ CONFIG.WEB_APP_URL ใน Code.gs */
+    const APP_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxj8-yp9JajQYrGXqo7UCsNBEoYpnypWOrSqhvDoKgJFH9dcaMg8Zm1cF1DHJCKrHYb/exec';
+
+    /* สีกราฟ ใช้ค่าเดียวกับตัวแปร --*-solid ในไฟล์ CSS เพื่อให้กราฟกับการ์ดเป็นชุดสีเดียวกัน */
+    const CHART_COLOR = {
+      mint: '#43b78c',
+      teal: '#33a4ac',
+      sky: '#4a91df',
+      lilac: '#8874df',
+      rose: '#ea6f82',
+      peach: '#ef9459',
+      lemon: '#e4b343'
+    };
+    const CHART_SERIES = [CHART_COLOR.mint, CHART_COLOR.sky, CHART_COLOR.lemon, CHART_COLOR.lilac, CHART_COLOR.peach, CHART_COLOR.teal, CHART_COLOR.rose];
+    const CHART_TEXT_STYLE = { fontName: 'Noto Sans Thai', fontSize: 11, color: '#5c6780' };
+    const CHART_GRIDLINES = { color: '#e8edf6', count: 5 };
     const ALL_CATEGORIES = '__ALL_CATEGORIES__';
     const ALL_GROUPS = '__ALL_GROUPS__';
     const SURVEY_COMPLETION_HEADERS = ['กลุ่มงาน', 'สถานะรวม', 'หมวดที่ครบ', 'รายการที่สำรวจ', 'ยังขาด', '%'];
@@ -2898,6 +3312,8 @@
 
     function bindEvents() {
       bindYearCombos();
+      setupImportUi();
+      syncWebAppLinks();
 
       document.body.addEventListener('click', event => {
         const button = event.target.closest('button');
@@ -3188,11 +3604,513 @@
     }
 
     function loadLocalDataFromGoogleSheet() {
+      /* ถ้าผู้ใช้นำเข้าไฟล์ Excel ไว้ในโหมดเปิดไฟล์ตรง ให้ใช้ข้อมูลจากไฟล์นั้นแทนการอ่าน Google Sheet */
+      const imported = getImportedWorkbook();
+      if (imported) {
+        return Promise.resolve(buildLocalDataFromSheetRows(
+          imported.sheets.map(sheet => ({ sheetName: sheet.name, rows: sheet.rows })),
+          imported.materialSheets,
+          { sourceLabel: imported.fileName, importedAt: imported.importedAt }
+        ));
+      }
       const sheetNames = ['กลุ่มงาน', 'รายชื่อผู้เบิก'].concat(LEGACY_SHEET_NAMES);
       return Promise.all(sheetNames.map(sheetName => fetchGvizSheet(sheetName)
         .then(rows => ({ sheetName, rows }))
         .catch(error => ({ sheetName, rows: [], error }))))
         .then(results => buildLocalDataFromSheetRows(results));
+    }
+
+    function getImportedWorkbook() {
+      const stored = getLocalStore('importedWorkbook', null);
+      if (!stored || !Array.isArray(stored.sheets) || !stored.sheets.length) return null;
+      if (!Array.isArray(stored.materialSheets) || !stored.materialSheets.length) return null;
+      return stored;
+    }
+
+    /* ======================================================================
+       นำเข้าไฟล์ Excel จากเครื่อง
+       - อ่านไฟล์ด้วย SheetJS ในเบราว์เซอร์ ไม่ต้องอัปโหลดขึ้น Drive ก่อน
+       - โหมดเปิดจาก Google Sheet: ส่งแถวข้อมูลไปเขียนลงชีตต้นทาง แล้ว import เข้าชีต GS_
+       - โหมดเปิดไฟล์ตรง: เก็บแถวข้อมูลไว้ใน localStorage แล้วสร้าง dashboard จากไฟล์นั้น
+       ====================================================================== */
+    const XLSX_SOURCES = [
+      'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+      'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'
+    ];
+    const IMPORT_MAX_FILE_BYTES = 15 * 1024 * 1024;
+    const IMPORT_MAX_PAYLOAD_BYTES = 8 * 1024 * 1024;
+    const IMPORT_SUPPORT_SHEETS = ['กลุ่มงาน', 'รายชื่อผู้เบิก'];
+    const IMPORT_PREVIEW_ROWS = 12;
+    let xlsxLoaderPromise = null;
+    let pendingImport = null;
+
+    function setupImportUi() {
+      const dropzone = document.getElementById('importDropzone');
+      const input = document.getElementById('importFileInput');
+      if (!dropzone || !input) return;
+
+      dropzone.addEventListener('click', () => input.click());
+      dropzone.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          input.click();
+        }
+      });
+      input.addEventListener('change', () => {
+        handleImportFiles(input.files);
+        input.value = '';
+      });
+
+      ['dragenter', 'dragover'].forEach(name => dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropzone.classList.add('dragging');
+      }));
+      ['dragleave', 'dragend'].forEach(name => dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropzone.classList.remove('dragging');
+      }));
+      dropzone.addEventListener('drop', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropzone.classList.remove('dragging');
+        handleImportFiles(event.dataTransfer && event.dataTransfer.files);
+      });
+
+      refreshImportModeBadge();
+    }
+
+    function refreshImportModeBadge() {
+      const badge = document.getElementById('importModeBadge');
+      if (!badge) return;
+      const onGs = isAppsScriptRuntime();
+      badge.textContent = onGs
+        ? 'โหมดเปิดจาก Google Sheet: บันทึกลงชีตจริง'
+        : 'โหมดเปิดไฟล์ตรง: เก็บข้อมูลไว้ในเบราว์เซอร์นี้';
+      badge.className = 'pill ' + (onGs ? 'green' : 'amber');
+
+      const status = document.getElementById('importStatus');
+      const imported = onGs ? null : getImportedWorkbook();
+      if (imported && status && !status.textContent) {
+        setImportStatus('ตอนนี้ dashboard ใช้ข้อมูลจากไฟล์ ' + imported.fileName
+          + ' ที่นำเข้าเมื่อ ' + imported.importedAt
+          + ' — กดปุ่ม ล้างข้อมูลนำเข้า เพื่อกลับไปอ่านจาก Google Sheet', 'ok');
+      }
+    }
+
+    function ensureXlsxLibrary() {
+      if (typeof XLSX !== 'undefined') return Promise.resolve(window.XLSX);
+      if (xlsxLoaderPromise) return xlsxLoaderPromise;
+      xlsxLoaderPromise = XLSX_SOURCES
+        .reduce((chain, url) => chain.catch(() => loadExternalScript(url).then(() => {
+          if (typeof XLSX === 'undefined') throw new Error('ไลบรารีไม่พร้อมใช้งาน');
+          return window.XLSX;
+        })), Promise.reject(new Error('start')))
+        .catch(() => {
+          xlsxLoaderPromise = null;
+          throw new Error('โหลดตัวอ่านไฟล์ Excel ไม่สำเร็จ ครั้งแรกต้องต่ออินเทอร์เน็ตเพื่อดึงไลบรารี');
+        });
+      return xlsxLoaderPromise;
+    }
+
+    function loadExternalScript(url) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => {
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error('โหลดไม่สำเร็จ: ' + url));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    function handleImportFiles(fileList) {
+      const file = fileList && fileList.length ? fileList[0] : null;
+      if (!file) return;
+      if (!/\.(xlsx|xlsm|xls|csv)$/i.test(file.name)) {
+        cancelImportWorkbook();
+        setImportStatus('รองรับเฉพาะไฟล์ .xlsx .xlsm .xls และ .csv แต่ได้รับไฟล์ ' + file.name, 'error');
+        return;
+      }
+      if (file.size > IMPORT_MAX_FILE_BYTES) {
+        cancelImportWorkbook();
+        setImportStatus('ไฟล์ใหญ่เกิน ' + Math.round(IMPORT_MAX_FILE_BYTES / 1048576) + ' MB กรุณาลดขนาดไฟล์หรือแยกชีตที่ไม่ใช้ออกก่อน', 'error');
+        return;
+      }
+
+      cancelImportWorkbook();
+      setImportStatus('กำลังอ่านไฟล์ ' + file.name + ' ...', '');
+      setBusy(true);
+      ensureXlsxLibrary()
+        .then(() => readWorkbookFile(file))
+        .then(workbook => {
+          const sheets = workbookToSheetRows(workbook);
+          let materialSheets = detectMaterialSheetNames(sheets);
+          /* ไฟล์ CSV หรือไฟล์ชีตเดียวไม่มีชื่อชีตให้ยึด ใช้ชื่อไฟล์เป็นชื่อหมวดวัสดุแทน */
+          if (!materialSheets.length && sheets.length === 1 && sheets[0].rows.length) {
+            const categoryName = cleanLocalText(file.name.replace(/\.[^.]+$/, '')) || 'หมวดวัสดุ';
+            sheets[0].name = /^\s*\d+\s*\./.test(categoryName) ? categoryName : '1.' + categoryName;
+            materialSheets = [sheets[0].name];
+          }
+          if (!materialSheets.length) {
+            throw new Error('ไม่พบชีตหมวดวัสดุในไฟล์นี้ ชื่อชีตต้องขึ้นต้นด้วยเลขลำดับและจุด เช่น 1.วัสดุสำนักงาน — ชีตที่พบคือ '
+              + sheets.map(sheet => sheet.name).join(', '));
+          }
+          const keepNames = materialSheets.concat(IMPORT_SUPPORT_SHEETS);
+          const usedSheets = sheets.filter(sheet => keepNames.indexOf(sheet.name) >= 0);
+          const preview = buildLocalDataFromSheetRows(
+            usedSheets.map(sheet => ({ sheetName: sheet.name, rows: sheet.rows })),
+            materialSheets,
+            { sourceLabel: file.name }
+          );
+          if (!preview.materials.length) {
+            throw new Error('อ่านไฟล์ได้แต่ไม่พบรายการวัสดุ ตรวจว่าหัวตารางอยู่แถวที่ 4-5 และคอลัมน์แรกเป็นลำดับที่เป็นตัวเลข');
+          }
+          pendingImport = {
+            fileName: file.name,
+            fileSize: file.size,
+            sheets: usedSheets,
+            allSheetNames: sheets.map(sheet => sheet.name),
+            materialSheets: materialSheets,
+            preview: preview
+          };
+          renderImportPreview();
+          setImportStatus('อ่านไฟล์สำเร็จ ตรวจตัวอย่างข้อมูลด้านล่างแล้วกด ยืนยันนำเข้าข้อมูล', 'ok');
+        })
+        .catch(error => {
+          cancelImportWorkbook();
+          setImportStatus(error && error.message ? error.message : String(error), 'error');
+        })
+        .finally(() => setBusy(false));
+    }
+
+    function readWorkbookFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            resolve(window.XLSX.read(new Uint8Array(reader.result), { type: 'array', raw: true, cellDates: false }));
+          } catch (error) {
+            reject(new Error('แกะไฟล์ไม่สำเร็จ ไฟล์อาจเสียหาย ถูกใส่รหัส หรือไม่ใช่ไฟล์ Excel จริง'));
+          }
+        };
+        reader.onerror = () => reject(new Error('อ่านไฟล์จากเครื่องไม่สำเร็จ กรุณาลองเลือกไฟล์อีกครั้ง'));
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function workbookToSheetRows(workbook) {
+      return (workbook.SheetNames || []).map(name => ({
+        name: name,
+        rows: trimSheetRows(worksheetToRows(workbook.Sheets[name]))
+      }));
+    }
+
+    /* อ่านชีตเป็นตารางที่ยึดมุมซ้ายบนไว้ที่ A1 เสมอ
+       ต้องยึด A1 เพราะ detectLocalLegacyColumns อ่านหัวตารางจากแถวที่ 4-5 ตามตำแหน่งจริงในชีต
+       ถ้าใช้ sheet_to_json ตรงๆ แล้วชีตมีช่วงข้อมูลไม่ได้เริ่มที่ A1 แถวและคอลัมน์จะเลื่อน */
+    function worksheetToRows(worksheet) {
+      if (!worksheet || !worksheet['!ref']) return [];
+      const utils = window.XLSX.utils;
+      const range = utils.decode_range(worksheet['!ref']);
+      const lastRow = Math.max(0, range.e.r);
+      const lastColumn = Math.max(0, range.e.c);
+      const rows = [];
+      for (let rowIndex = 0; rowIndex <= lastRow; rowIndex += 1) {
+        const row = [];
+        for (let columnIndex = 0; columnIndex <= lastColumn; columnIndex += 1) {
+          const cell = worksheet[utils.encode_cell({ r: rowIndex, c: columnIndex })];
+          row.push(cell && cell.v !== undefined && cell.v !== null ? cell.v : '');
+        }
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    /* ตัดแถวและคอลัมน์ว่างท้ายชีตออก ลดขนาด payload ที่ส่งขึ้น Apps Script */
+    function trimSheetRows(rows) {
+      const cleaned = (rows || []).map(row => {
+        const list = Array.isArray(row) ? row.slice() : [];
+        while (list.length && !hasLocalValue(list[list.length - 1])) list.pop();
+        return list;
+      });
+      while (cleaned.length && !cleaned[cleaned.length - 1].length) cleaned.pop();
+      return cleaned;
+    }
+
+    function detectMaterialSheetNames(sheets) {
+      const names = sheets.map(sheet => sheet.name);
+      const numbered = names.filter(name => /^\s*\d+\s*\./.test(name));
+      if (numbered.length) {
+        return numbered.slice().sort((a, b) => leadingSheetNumber(a) - leadingSheetNumber(b));
+      }
+      return names.filter(name => LEGACY_SHEET_NAMES.indexOf(name) >= 0);
+    }
+
+    function leadingSheetNumber(name) {
+      return Number((String(name).match(/^\s*(\d+)/) || [])[1] || 0);
+    }
+
+    function setImportStatus(message, kind) {
+      const element = document.getElementById('importStatus');
+      if (!element) return;
+      element.textContent = message || '';
+      element.className = 'import-status status' + (message && kind ? ' ' + kind : '');
+    }
+
+    function renderImportPreview() {
+      const preview = document.getElementById('importPreview');
+      const actions = document.getElementById('importActions');
+      if (!preview || !actions) return;
+      if (!pendingImport) {
+        preview.innerHTML = '';
+        actions.hidden = true;
+        return;
+      }
+
+      const data = pendingImport.preview;
+      const years = data.surveys.reduce((list, row) => {
+        const year = normalizeLocalYear(row.calendarYear);
+        if (year && list.indexOf(year) < 0) list.push(year);
+        return list;
+      }, []).sort((a, b) => a - b);
+      const priced = data.materials.filter(row => Number(row.unitPrice) > 0).length;
+
+      const stats = [
+        ['ชีตหมวดวัสดุ', formatNumber(pendingImport.materialSheets.length)],
+        ['หมวดวัสดุ', formatNumber(data.categories.length)],
+        ['รายการวัสดุ', formatNumber(data.materials.length)],
+        ['มีราคาต่อหน่วย', formatNumber(priced) + ' / ' + formatNumber(data.materials.length)],
+        ['กลุ่มงาน', formatNumber(data.groups.length)],
+        ['ผู้เบิก', formatNumber(data.requesters.length)],
+        ['ข้อมูลสำรวจ', formatNumber(data.surveys.length) + ' แถว'],
+        ['ปีที่พบ', years.length ? years[0] + ' - ' + years[years.length - 1] : '-']
+      ];
+
+      const sheetPills = pendingImport.allSheetNames.map(name => {
+        const used = pendingImport.materialSheets.indexOf(name) >= 0;
+        const support = IMPORT_SUPPORT_SHEETS.indexOf(name) >= 0;
+        const tone = used ? 'green' : (support ? 'sky' : '');
+        const suffix = used ? ' (หมวดวัสดุ)' : (support ? ' (ข้อมูลประกอบ)' : ' (ไม่ใช้)');
+        return badge(name + suffix, tone);
+      }).join('');
+
+      const sampleRows = data.materials.slice(0, IMPORT_PREVIEW_ROWS).map((row, index) => [
+        index + 1,
+        clipText(row.categoryName),
+        clipText(row.itemName),
+        clipText(row.unit || '-'),
+        formatMoney(row.unitPrice),
+        formatNumber(row.stockBalance),
+        formatNumber(row.currentYearUsage),
+        formatNumber(row.estimatedNextYear)
+      ]);
+
+      const warnings = [];
+      if (!priced) warnings.push('ไฟล์นี้ไม่มีราคาต่อหน่วยเลย มูลค่าใน dashboard จะเป็น 0 จนกรอกราคาในหน้า เพิ่ม/ลบ รายการวัสดุ');
+      if (!data.requesters.length) warnings.push('ไม่พบชีต รายชื่อผู้เบิก ระบบจะใช้รายชื่อผู้เบิกเดิมที่มีอยู่');
+      if (!years.length) warnings.push('ไม่พบคอลัมน์ปีในหัวตาราง ข้อมูลย้อนหลังจะไม่ถูกนำเข้า');
+
+      const targetNote = isAppsScriptRuntime()
+        ? 'กดยืนยันแล้วระบบจะ<strong>เขียนทับชีต ' + escapeHtml(pendingImport.materialSheets.join(', '))
+          + '</strong> ใน Google Sheet เล่มนี้ แล้วนำเข้าเข้าชีต GS_ ทั้งหมด'
+        : 'กดยืนยันแล้วระบบจะเก็บข้อมูลไฟล์นี้ไว้ในเบราว์เซอร์เครื่องนี้ และใช้แสดง dashboard แทนการอ่านจาก Google Sheet (ไม่แก้ไข Google Sheet) '
+          + 'ถ้าต้องการให้บันทึกลง Google Sheet จริง ให้กด <strong>เปิดเว็บแอป</strong> แล้วนำเข้าไฟล์อีกครั้งจากหน้านั้น';
+
+      preview.innerHTML = `
+        <div class="detail-summary">
+          <div class="detail-item"><span>ไฟล์</span><strong>${escapeHtml(pendingImport.fileName)}</strong></div>
+          <div class="detail-item"><span>ขนาด</span><strong>${formatNumber(Math.max(1, Math.round(pendingImport.fileSize / 1024)))} KB</strong></div>
+        </div>
+        <div class="summary-stats">
+          ${stats.map(row => `<div class="summary-stat"><strong>${escapeHtml(row[1])}</strong><span>${escapeHtml(row[0])}</span></div>`).join('')}
+        </div>
+        <div>
+          <p class="range-note">ชีตที่พบในไฟล์</p>
+          <div class="import-sheet-list">${sheetPills}</div>
+        </div>
+        ${warnings.length ? `<div class="import-status warn">${warnings.map(escapeHtml).join(' • ')}</div>` : ''}
+        <div>
+          <p class="range-note">ตัวอย่าง ${formatNumber(sampleRows.length)} รายการแรกจากทั้งหมด ${formatNumber(data.materials.length)} รายการ</p>
+          <div class="table-wrap import-preview-table">
+            ${table(['#', 'หมวดวัสดุ', 'รายการ', 'หน่วย', 'ราคา/หน่วย', 'คงเหลือ', 'ใช้ปีปัจจุบัน', 'ประมาณการ'], sampleRows, [0, 4, 5, 6, 7])}
+          </div>
+        </div>
+        <p class="range-note">${targetNote}</p>`;
+      actions.hidden = false;
+      refreshIcons();
+    }
+
+    function cancelImportWorkbook() {
+      pendingImport = null;
+      const preview = document.getElementById('importPreview');
+      const actions = document.getElementById('importActions');
+      if (preview) preview.innerHTML = '';
+      if (actions) actions.hidden = true;
+      setImportStatus('', '');
+    }
+
+    function confirmImportWorkbook() {
+      if (!pendingImport) {
+        setImportStatus('ยังไม่ได้เลือกไฟล์ กรุณาเลือกไฟล์ Excel ก่อน', 'warn');
+        return;
+      }
+      const snapshot = pendingImport;
+
+      if (!isAppsScriptRuntime()) {
+        const stored = {
+          fileName: snapshot.fileName,
+          importedAt: new Date().toLocaleString('th-TH'),
+          materialSheets: snapshot.materialSheets,
+          sheets: snapshot.sheets
+        };
+        if (!setLocalStore('importedWorkbook', stored)) {
+          setImportStatus('บันทึกข้อมูลลงเบราว์เซอร์ไม่สำเร็จ พื้นที่เก็บข้อมูลอาจเต็ม ลองล้างข้อมูลนำเข้าเดิมหรือใช้ไฟล์ที่เล็กกว่า', 'error');
+          return;
+        }
+        cancelImportWorkbook();
+        localDataPromise = null;
+        loadDashboard();
+        setImportStatus('นำเข้าไฟล์ ' + stored.fileName + ' แล้ว '
+          + formatNumber(snapshot.preview.materials.length) + ' รายการ ใน '
+          + formatNumber(snapshot.preview.categories.length) + ' หมวดวัสดุ', 'ok');
+        refreshImportModeBadge();
+        toast('นำเข้าไฟล์ Excel แล้ว ' + formatNumber(snapshot.preview.materials.length) + ' รายการ');
+        return;
+      }
+
+      const payload = { fileName: snapshot.fileName, sheets: snapshot.sheets };
+      let payloadSize = 0;
+      try {
+        payloadSize = JSON.stringify(payload).length;
+      } catch (error) {
+        setImportStatus('เตรียมข้อมูลส่งขึ้น Google Sheet ไม่สำเร็จ', 'error');
+        return;
+      }
+      if (payloadSize > IMPORT_MAX_PAYLOAD_BYTES) {
+        setImportStatus('ข้อมูลที่ต้องส่งขึ้น Google Sheet ใหญ่เกินไป ('
+          + formatNumber(Math.round(payloadSize / 1048576)) + ' MB) กรุณาลบชีตหรือคอลัมน์ที่ไม่ใช้ในไฟล์ออกก่อน', 'error');
+        return;
+      }
+
+      setImportStatus('กำลังส่งข้อมูลขึ้น Google Sheet และนำเข้า ...', '');
+      callServer('importWorkbookSheets', payload).then(result => {
+        cancelImportWorkbook();
+        setImportStatus('นำเข้าสำเร็จ: เขียนชีตต้นทาง ' + formatNumber(result.writtenSheets)
+          + ' ชีต, หมวดวัสดุ ' + formatNumber(result.categories)
+          + ', รายการวัสดุ ' + formatNumber(result.materials)
+          + ', ข้อมูลสำรวจ ' + formatNumber(result.surveys) + ' แถว', 'ok');
+        toast('นำเข้าไฟล์ Excel เข้า Google Sheet แล้ว');
+        loadDashboard();
+      }).catch(error => {
+        setImportStatus('นำเข้าไม่สำเร็จ: ' + (error && error.message ? error.message : String(error)), 'error');
+      });
+    }
+
+    function clearImportedWorkbook() {
+      if (isAppsScriptRuntime()) {
+        setImportStatus('โหมดเปิดจาก Google Sheet ไม่มีข้อมูลนำเข้าที่เก็บในเบราว์เซอร์', 'warn');
+        return;
+      }
+      if (!getImportedWorkbook()) {
+        setImportStatus('ยังไม่มีข้อมูลนำเข้าที่เก็บไว้ในเบราว์เซอร์นี้', 'warn');
+        return;
+      }
+      setLocalStore('importedWorkbook', null);
+      cancelImportWorkbook();
+      localDataPromise = null;
+      loadDashboard();
+      setImportStatus('ล้างข้อมูลนำเข้าแล้ว กลับไปอ่านข้อมูลจาก Google Sheet', 'ok');
+      refreshImportModeBadge();
+      toast('ล้างข้อมูลนำเข้าแล้ว');
+    }
+
+    /* เปิด Google Sheet ต้นทางในแท็บใหม่ ใช้ทั้งใน iframe ของ Apps Script และตอนเปิดไฟล์ตรง */
+    function googleSheetUrl() {
+      const fromServer = state.data && state.data.spreadsheetUrl;
+      if (fromServer) return fromServer;
+      return 'https://docs.google.com/spreadsheets/d/' + APP_SPREADSHEET_ID + '/edit';
+    }
+
+    /* URL เว็บแอป: ใช้ค่าจริงจากเซิร์ฟเวอร์ก่อน เพราะตรงกับ deployment ปัจจุบันแน่นอน */
+    function webAppUrl() {
+      const fromServer = state.data && state.data.webAppUrl;
+      return cleanLocalText(fromServer) || APP_WEB_APP_URL;
+    }
+
+    function openGoogleSheet() {
+      openExternalUrl(googleSheetUrl(), 'เปิด Google Sheet');
+    }
+
+    function openWebApp() {
+      openExternalUrl(webAppUrl(), 'เปิดเว็บแอป');
+    }
+
+    function openExternalUrl(url, linkLabel) {
+      if (!url) {
+        toast('ยังไม่ได้ตั้ง URL ปลายทาง');
+        return;
+      }
+      let opened = null;
+      try {
+        opened = window.open(url, '_blank', 'noopener');
+      } catch (error) {
+        opened = null;
+      }
+      if (opened) return;
+
+      /* ถ้า popup ถูกบล็อก ให้จำลองการคลิกลิงก์ ซึ่ง iframe ของ Apps Script อนุญาต */
+      try {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      } catch (error) {
+        reportError(error);
+      }
+      toast('เบราว์เซอร์บล็อกการเปิดแท็บใหม่ กดลิงก์ ' + (linkLabel || 'ในเมนูด้านซ้าย') + ' แทน');
+    }
+
+    /* ถ้าเปิดจาก Apps Script ให้ใช้ URL จริงของสเปรดชีตเล่มที่กำลังใช้งาน */
+    function syncGoogleSheetLinks(url) {
+      if (!url) return;
+      ['navGoogleSheetLink', 'exportGoogleSheetLink', 'runtimeGoogleSheetLink'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.href = url;
+      });
+    }
+
+    /* ใส่ URL เว็บแอปลงในลิงก์ทุกจุด และปรับข้อความให้ตรงกับวิธีเปิดหน้าปัจจุบัน */
+    function syncWebAppLinks() {
+      const url = webAppUrl();
+      const onGs = isAppsScriptRuntime();
+      ['navWebAppLink', 'exportWebAppLink', 'runtimeWebAppLink'].forEach(id => {
+        const element = document.getElementById(id);
+        if (!element) return;
+        if (!url) {
+          element.hidden = true;
+          return;
+        }
+        element.href = url;
+        element.hidden = false;
+      });
+
+      const navLink = document.getElementById('navWebAppLink');
+      if (navLink && url) {
+        const label = navLink.querySelector('span:last-child');
+        if (label) {
+          label.textContent = onGs ? 'เปิดเว็บแอปเต็มหน้าจอ' : 'เปิดเว็บแอป (บันทึกลงชีตได้)';
+        }
+      }
     }
 
     function fetchGvizSheet(sheetName) {
@@ -3242,16 +4160,27 @@
       }));
     }
 
-    function buildLocalDataFromSheetRows(results) {
+    function buildLocalDataFromSheetRows(results, materialSheetNames, meta) {
+      meta = meta || {};
       const byName = {};
       results.forEach(result => byName[result.sheetName] = result.rows || []);
+      /* ปกติใช้ชื่อชีตชุดเดิม แต่ถ้านำเข้าจากไฟล์ Excel จะส่งรายชื่อชีตที่พบในไฟล์นั้นเข้ามา */
+      const sheetNames = Array.isArray(materialSheetNames) && materialSheetNames.length
+        ? materialSheetNames
+        : LEGACY_SHEET_NAMES;
+      const sourceNote = meta.sourceLabel ? 'นำเข้าจากไฟล์ ' + meta.sourceLabel : 'นำเข้าจาก Google Sheet';
+      const estimateNote = meta.sourceLabel ? 'ประมาณการจากไฟล์ ' + meta.sourceLabel : 'ประมาณการจาก Google Sheet';
       const groups = buildLocalGroups(byName['กลุ่มงาน'] || []);
       const requesters = buildLocalRequesters(byName['รายชื่อผู้เบิก'] || [], groups);
       const categories = [];
       const materials = [];
       const surveys = [];
+      /* ชีตต้นทางบางชีตมีรายการซ้ำ (หมวด+ชื่อ+หน่วย เดียวกัน) ต้องรวมเป็นรายการเดียว
+         ให้ตรงกับฝั่ง Apps Script ที่ upsert ด้วยคีย์เดียวกัน ไม่งั้นสถิติจะนับซ้ำ */
+      const materialIndexById = {};
+      const surveyIndexById = {};
 
-      LEGACY_SHEET_NAMES.forEach((sheetName, sheetIndex) => {
+      sheetNames.forEach((sheetName, sheetIndex) => {
         const rows = byName[sheetName] || [];
         const categoryName = cleanLocalText(sheetName.replace(/^\d+\./, ''));
         const categoryId = 'CAT-' + (sheetIndex + 1);
@@ -3279,39 +4208,49 @@
           const currentYearUsage = currentYearColumn && hasLocalImportValue(row[currentYearColumn.index]) ? toInteger(row[currentYearColumn.index]) : 0;
           const estimatedNextYear = columns.estimateColumn && hasLocalImportValue(row[columns.estimateColumn.index]) ? toInteger(row[columns.estimateColumn.index]) : 0;
 
-          const material = {
-            materialId,
-            categoryId,
-            categoryName,
-            itemName,
-            unit,
-            unitPrice,
-            stockBalance,
-            active: true,
-            sourceSheet: sheetName,
-            sourceRow: rowIndex + 1,
-            currentYearUsage,
-            estimatedNextYear,
-            imageUrl: '',
-            barcode: '',
-            reorderPoint: 0,
-            minStock: 0,
-            maxStock: 0,
-            usefulLife: '',
-            lotNumber: '',
-            expireDate: '',
-            supplierName: '',
-            companyName: '',
-            vedClass: deriveLocalVedClass(categoryName)
-          };
-          materials.push(material);
+          let material = materialIndexById[materialId] >= 0 ? materials[materialIndexById[materialId]] : null;
+          if (material) {
+            /* แถวซ้ำ: เติมเฉพาะช่องที่ของเดิมยังว่าง เพื่อไม่ทับค่าที่อ่านได้แล้ว */
+            if (!material.unitPrice && unitPrice) material.unitPrice = unitPrice;
+            if (!material.stockBalance && stockBalance) material.stockBalance = stockBalance;
+            if (!material.currentYearUsage && currentYearUsage) material.currentYearUsage = currentYearUsage;
+            if (!material.estimatedNextYear && estimatedNextYear) material.estimatedNextYear = estimatedNextYear;
+          } else {
+            material = {
+              materialId,
+              categoryId,
+              categoryName,
+              itemName,
+              unit,
+              unitPrice,
+              stockBalance,
+              active: true,
+              sourceSheet: sheetName,
+              sourceRow: rowIndex + 1,
+              currentYearUsage,
+              estimatedNextYear,
+              imageUrl: '',
+              barcode: '',
+              reorderPoint: 0,
+              minStock: 0,
+              maxStock: 0,
+              usefulLife: '',
+              lotNumber: '',
+              expireDate: '',
+              supplierName: '',
+              companyName: '',
+              vedClass: deriveLocalVedClass(categoryName)
+            };
+            materials.push(material);
+            materialIndexById[materialId] = materials.length - 1;
+          }
 
           columns.yearColumns.forEach(col => {
             if (!hasLocalImportValue(row[col.index])) return;
-            surveys.push(localSurveyObject(col.year, LEGACY_TOTAL_GROUP, material, toInteger(row[col.index]), 0, 'นำเข้าจาก Google Sheet'));
+            pushLocalSurvey(surveys, surveyIndexById, localSurveyObject(col.year, LEGACY_TOTAL_GROUP, material, toInteger(row[col.index]), 0, sourceNote));
           });
           if (columns.estimateColumn && hasLocalImportValue(row[columns.estimateColumn.index])) {
-            surveys.push(localSurveyObject(columns.estimateColumn.year, LEGACY_TOTAL_GROUP, material, 0, toInteger(row[columns.estimateColumn.index]), 'ประมาณการจาก Google Sheet'));
+            pushLocalSurvey(surveys, surveyIndexById, localSurveyObject(columns.estimateColumn.year, LEGACY_TOTAL_GROUP, material, 0, toInteger(row[columns.estimateColumn.index]), estimateNote));
           }
         });
       });
@@ -3332,8 +4271,9 @@
         requisitionItems: getLocalStore('requisitionItems', []),
         stockMovements: getLocalStore('stockMovements', []),
         sync: {
-          lastImportAt: new Date().toLocaleString('th-TH'),
-          sourceSheets: LEGACY_SHEET_NAMES.filter(name => (byName[name] || []).length)
+          lastImportAt: meta.importedAt || new Date().toLocaleString('th-TH'),
+          sourceFile: meta.sourceLabel || '',
+          sourceSheets: sheetNames.filter(name => (byName[name] || []).length)
         }
       };
       data.stats = buildClientStats(data, getFilters());
@@ -3413,6 +4353,20 @@
       }
       columns.yearColumns.sort((a, b) => a.year - b.year);
       return columns;
+    }
+
+    /* รวมข้อมูลสำรวจที่คีย์ ปี+กลุ่มงาน+รายการ ซ้ำกันเป็นแถวเดียว โดยเก็บค่าที่มีจริงไว้ */
+    function pushLocalSurvey(surveys, indexById, row) {
+      const existingIndex = indexById[row.surveyId];
+      if (existingIndex >= 0) {
+        const existing = surveys[existingIndex];
+        if (!existing.usedQty && row.usedQty) existing.usedQty = row.usedQty;
+        if (!existing.estimatedQty && row.estimatedQty) existing.estimatedQty = row.estimatedQty;
+        existing.amount = (Number(existing.usedQty) || 0) * (Number(existing.unitPrice) || 0);
+        return;
+      }
+      surveys.push(row);
+      indexById[row.surveyId] = surveys.length - 1;
     }
 
     function localSurveyObject(year, groupName, material, usedQty, estimatedQty, note) {
@@ -4404,8 +5358,12 @@
       const sheets = (worksheets || [])
         .map(sheet => excelWorksheetXml(safeLocalWorksheetName(sheet.name, usedNames), sheet.sections || []))
         .join('');
-      return `<?xml version="1.0" encoding="UTF-8"?>
-        <?mso-application progid="Excel.Sheet"?>
+      /* ประกอบเครื่องหมายเปิด XML processing instruction จากสองชิ้น
+         เพราะ HtmlService ของ Apps Script อ่านลำดับอักขระนั้นเป็น scriptlet
+         ถ้าเขียนติดกันตรงๆ หน้า dashboard จะ evaluate template ไม่ผ่านตอนเปิดจาก Google Sheet */
+      const pi = '<' + '?';
+      return `${pi}xml version="1.0" encoding="UTF-8"?>
+        ${pi}mso-application progid="Excel.Sheet"?>
         <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
           xmlns:o="urn:schemas-microsoft-com:office:office"
           xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -5362,9 +6320,15 @@
 
     function setLocalStore(key, value) {
       try {
-        localStorage.setItem('parcelDashboard:' + key, JSON.stringify(value));
+        if (value === null || value === undefined) {
+          localStorage.removeItem('parcelDashboard:' + key);
+        } else {
+          localStorage.setItem('parcelDashboard:' + key, JSON.stringify(value));
+        }
+        return true;
       } catch (error) {
         reportError(error);
+        return false;
       }
     }
 
@@ -5380,8 +6344,11 @@
       callServer('getDashboardData', getFilters()).then(data => {
         state.data = normalizeDashboardData(data);
         state.view = getRequestedView() || data.activeView || state.view;
+        syncGoogleSheetLinks(state.data.spreadsheetUrl);
+        syncWebAppLinks();
         populateControls();
         renderAll();
+        refreshImportModeBadge();
       });
     }
 
@@ -5797,20 +6764,20 @@
       const stock = state.data.stock || buildClientStockStats(state.data, getFilters());
       const stockKpis = stock.kpis || {};
       document.getElementById('metricGrid').innerHTML = [
-        metric('package', kpis.totalMaterials, 'วัสดุทั้งหมด', ''),
-        metric('warehouse', stockKpis.stockQty || 0, 'วัสดุคงคลัง', 'green'),
-        metric('wallet', stockKpis.stockValue || 0, 'มูลค่าคงคลัง', 'amber', true),
-        metric('triangle-alert', stockKpis.reorderCount || 0, 'ถึงจุดสั่งซื้อ', 'coral'),
-        metric('calendar-clock', stockKpis.nearExpiryCount || 0, 'ใกล้หมดอายุ', ''),
-        metric('calendar-x', stockKpis.expiredCount || 0, 'หมดอายุ', 'coral'),
-        metric('clipboard-list', stockKpis.requisitionsToday || 0, 'ใบเบิกวันนี้', 'green'),
-        metric('receipt-text', stockKpis.issuedValueThisMonth || 0, 'เบิกเดือนนี้', 'amber', true)
+        metric('package', kpis.totalMaterials, 'วัสดุทั้งหมด', 'tone-sky'),
+        metric('warehouse', stockKpis.stockQty || 0, 'วัสดุคงคลัง', 'tone-mint'),
+        metric('wallet', stockKpis.stockValue || 0, 'มูลค่าคงคลัง', 'tone-lemon', true),
+        metric('triangle-alert', stockKpis.reorderCount || 0, 'ถึงจุดสั่งซื้อ', 'tone-peach'),
+        metric('calendar-clock', stockKpis.nearExpiryCount || 0, 'ใกล้หมดอายุ', 'tone-lilac'),
+        metric('calendar-x', stockKpis.expiredCount || 0, 'หมดอายุ', 'tone-rose'),
+        metric('clipboard-list', stockKpis.requisitionsToday || 0, 'ใบเบิกวันนี้', 'tone-teal'),
+        metric('receipt-text', stockKpis.issuedValueThisMonth || 0, 'เบิกเดือนนี้', 'tone-mint', true)
       ].join('');
       document.getElementById('executiveMetrics').innerHTML = [
-        metric('users', kpis.totalGroups, 'กลุ่มงาน', ''),
-        metric('trending-up', kpis.avgMonthlyUsage, 'เฉลี่ยต่อเดือน', 'green'),
-        metric('file-spreadsheet', kpis.estimatedValue, 'มูลค่าประมาณการ', 'amber', true),
-        metric('package-check', state.data.stats.topMaterials.length, 'รายการใช้สูง', 'coral')
+        metric('users', kpis.totalGroups, 'กลุ่มงาน', 'tone-lilac'),
+        metric('trending-up', kpis.avgMonthlyUsage, 'เฉลี่ยต่อเดือน', 'tone-mint'),
+        metric('file-spreadsheet', kpis.estimatedValue, 'มูลค่าประมาณการ', 'tone-lemon', true),
+        metric('package-check', state.data.stats.topMaterials.length, 'รายการใช้สูง', 'tone-sky')
       ].join('');
     }
 
@@ -5826,10 +6793,10 @@
       const stock = state.data.stock || buildClientStockStats(state.data, getFilters());
       const kpis = stock.kpis || {};
       document.getElementById('stockMetricGrid').innerHTML = [
-        metric('package-check', kpis.stockQty || 0, 'วัสดุคงคลัง', ''),
-        metric('wallet', kpis.stockValue || 0, 'มูลค่าคงคลัง', 'green', true),
-        metric('layers', kpis.categoryCount || 0, 'หมวดวัสดุ', 'amber'),
-        metric('package-minus', kpis.issuedValue || 0, 'มูลค่าตัดจ่าย', 'coral', true)
+        metric('package-check', kpis.stockQty || 0, 'วัสดุคงคลัง', 'tone-teal'),
+        metric('wallet', kpis.stockValue || 0, 'มูลค่าคงคลัง', 'tone-mint', true),
+        metric('layers', kpis.categoryCount || 0, 'หมวดวัสดุ', 'tone-lilac'),
+        metric('package-minus', kpis.issuedValue || 0, 'มูลค่าตัดจ่าย', 'tone-peach', true)
       ].join('');
 
       document.getElementById('stockCategoryTable').innerHTML = table(['หมวดวัสดุ', 'รายการ', 'คงเหลือ', 'มูลค่าคงคลัง'], (stock.categoryStock || []).map(row => [
@@ -7569,22 +8536,22 @@
 
     function drawCharts() {
       if (!state.data) return;
-      drawColumnChart('overviewCategoryChart', 'ประเภท', 'จำนวนใช้', state.data.stats.usageByCategory.slice(0, 10).map(row => [row.categoryName, Number(row.currentQty) || 0]), '#1f6f78');
-      drawColumnChart('overviewValueChart', 'กลุ่มงาน', 'มูลค่า', state.data.stats.valueByGroup.slice(0, 10).map(row => [row.groupName, Number(row.amount) || 0]), '#d99a27');
-      drawColumnChart('usageCategoryChart', 'ประเภท', 'จำนวนใช้', state.data.stats.usageByCategory.map(row => [row.categoryName, Number(row.currentQty) || 0]), '#3c6fb6');
-      drawColumnChart('usageGroupChart', 'กลุ่มงาน', 'จำนวนใช้', state.data.stats.usageByGroup.map(row => [row.groupName, Number(row.currentQty) || 0]), '#3f8f67');
-      drawColumnChart('valueCategoryChart', 'ประเภท', 'มูลค่า', state.data.stats.valueByCategory.map(row => [row.categoryName, Number(row.amount) || 0]), '#d85f55');
-      drawColumnChart('valueGroupChart', 'กลุ่มงาน', 'มูลค่า', state.data.stats.valueByGroup.map(row => [row.groupName, Number(row.amount) || 0]), '#1f6f78');
+      drawColumnChart('overviewCategoryChart', 'ประเภท', 'จำนวนใช้', state.data.stats.usageByCategory.slice(0, 10).map(row => [row.categoryName, Number(row.currentQty) || 0]), CHART_COLOR.teal);
+      drawColumnChart('overviewValueChart', 'กลุ่มงาน', 'มูลค่า', state.data.stats.valueByGroup.slice(0, 10).map(row => [row.groupName, Number(row.amount) || 0]), CHART_COLOR.lemon);
+      drawColumnChart('usageCategoryChart', 'ประเภท', 'จำนวนใช้', state.data.stats.usageByCategory.map(row => [row.categoryName, Number(row.currentQty) || 0]), CHART_COLOR.sky);
+      drawColumnChart('usageGroupChart', 'กลุ่มงาน', 'จำนวนใช้', state.data.stats.usageByGroup.map(row => [row.groupName, Number(row.currentQty) || 0]), CHART_COLOR.mint);
+      drawColumnChart('valueCategoryChart', 'ประเภท', 'มูลค่า', state.data.stats.valueByCategory.map(row => [row.categoryName, Number(row.amount) || 0]), CHART_COLOR.rose);
+      drawColumnChart('valueGroupChart', 'กลุ่มงาน', 'มูลค่า', state.data.stats.valueByGroup.map(row => [row.groupName, Number(row.amount) || 0]), CHART_COLOR.teal);
       if (state.data.stock) {
-        drawColumnChart('stockCategoryChart', 'หมวดวัสดุ', 'มูลค่าคงคลัง', (state.data.stock.categoryStock || []).slice(0, 10).map(row => [row.categoryName, Number(row.stockValue) || 0]), '#1f6f78');
-        drawColumnChart('stockGroupChart', 'กลุ่มงาน', 'มูลค่าตัดจ่าย', (state.data.stock.issueByGroup || []).slice(0, 10).map(row => [row.groupName, Number(row.issuedValue) || 0]), '#d99a27');
-        drawColumnChart('executiveStockValueChart', 'หมวดวัสดุ', 'มูลค่าคงคลัง', (state.data.stock.categoryStock || []).slice(0, 12).map(row => [row.categoryName, Number(row.stockValue) || 0]), '#1f6f78');
-        drawAreaChart('executiveIssueTrendChart', 'เดือน', 'มูลค่าตัดจ่าย', (state.data.stock.issueTrend || []).map(row => [row.month, Number(row.issuedValue) || 0]), '#3c6fb6');
-        drawBarChart('executiveTopIssuedChart', 'รายการ', 'จำนวนตัดจ่าย', (state.data.stock.topIssuedMaterials || []).slice(0, 10).map(row => [row.itemName, Number(row.issuedQty) || 0]), '#3f8f67');
-        drawColumnChart('executiveGroupIssueChart', 'กลุ่มงาน', 'มูลค่าตัดจ่าย', (state.data.stock.issueByGroup || []).slice(0, 10).map(row => [row.groupName, Number(row.issuedValue) || 0]), '#d99a27');
+        drawColumnChart('stockCategoryChart', 'หมวดวัสดุ', 'มูลค่าคงคลัง', (state.data.stock.categoryStock || []).slice(0, 10).map(row => [row.categoryName, Number(row.stockValue) || 0]), CHART_COLOR.teal);
+        drawColumnChart('stockGroupChart', 'กลุ่มงาน', 'มูลค่าตัดจ่าย', (state.data.stock.issueByGroup || []).slice(0, 10).map(row => [row.groupName, Number(row.issuedValue) || 0]), CHART_COLOR.lemon);
+        drawColumnChart('executiveStockValueChart', 'หมวดวัสดุ', 'มูลค่าคงคลัง', (state.data.stock.categoryStock || []).slice(0, 12).map(row => [row.categoryName, Number(row.stockValue) || 0]), CHART_COLOR.teal);
+        drawAreaChart('executiveIssueTrendChart', 'เดือน', 'มูลค่าตัดจ่าย', (state.data.stock.issueTrend || []).map(row => [row.month, Number(row.issuedValue) || 0]), CHART_COLOR.sky);
+        drawBarChart('executiveTopIssuedChart', 'รายการ', 'จำนวนตัดจ่าย', (state.data.stock.topIssuedMaterials || []).slice(0, 10).map(row => [row.itemName, Number(row.issuedQty) || 0]), CHART_COLOR.mint);
+        drawColumnChart('executiveGroupIssueChart', 'กลุ่มงาน', 'มูลค่าตัดจ่าย', (state.data.stock.issueByGroup || []).slice(0, 10).map(row => [row.groupName, Number(row.issuedValue) || 0]), CHART_COLOR.lemon);
         drawPieChart('executiveAbcChart', 'ABC', (state.data.stock.abcSummary || []).map(row => [row.abcClass, Number(row.stockValue) || 0]));
         drawPieChart('executiveCategoryPieChart', 'หมวดวัสดุ', (state.data.stock.categoryStock || []).map(row => [row.categoryName, Number(row.materialCount) || 0]));
-        drawColumnChart('executiveSupplierChart', 'Supplier', 'มูลค่าคงคลัง', (state.data.stock.supplierStats || []).slice(0, 8).map(row => [row.supplierName, Number(row.stockValue) || 0]), '#7b6bb0');
+        drawColumnChart('executiveSupplierChart', 'Supplier', 'มูลค่าคงคลัง', (state.data.stock.supplierStats || []).slice(0, 8).map(row => [row.supplierName, Number(row.stockValue) || 0]), CHART_COLOR.lilac);
         drawGaugeChart('executiveTurnoverGauge', 'Turnover', Number(state.data.stock.kpis.inventoryTurnover) || 0, 12);
         drawGaugeChart('executiveDaysGauge', 'Days', Number(state.data.stock.kpis.daysInventory) || 0, 365);
         drawTreeMapChart('executiveTreemapChart', state.data.stock.issueHeatmap || []);
@@ -7598,7 +8565,7 @@
       const element = document.getElementById('surveySaveCategoryChart');
       if (!element || typeof google === 'undefined' || !google.charts) return;
       google.charts.setOnLoadCallback(() => {
-        drawColumnChart('surveySaveCategoryChart', 'หมวดวัสดุ', 'จำนวนรายการ', (categories || []).map(row => [row.categoryName, Number(row.materialCount) || 0]), '#3f8f67');
+        drawColumnChart('surveySaveCategoryChart', 'หมวดวัสดุ', 'จำนวนรายการ', (categories || []).map(row => [row.categoryName, Number(row.materialCount) || 0]), CHART_COLOR.mint);
       });
     }
 
@@ -7610,11 +8577,12 @@
       const chart = new google.visualization.ColumnChart(element);
       chart.draw(data, {
         legend: { position: 'none' },
-        chartArea: { left: 70, top: 28, width: '78%', height: '68%' },
-        colors: [color],
+        chartArea: { left: 74, top: 28, width: '78%', height: '66%' },
+        colors: [color || CHART_COLOR.mint],
         backgroundColor: 'transparent',
-        hAxis: { textStyle: { fontName: 'Sarabun', fontSize: 11 } },
-        vAxis: { minValue: 0, textStyle: { fontName: 'Sarabun', fontSize: 11 } }
+        bar: { groupWidth: '62%' },
+        hAxis: { textStyle: CHART_TEXT_STYLE, baselineColor: '#dbe3f0' },
+        vAxis: { minValue: 0, textStyle: CHART_TEXT_STYLE, gridlines: CHART_GRIDLINES, baselineColor: '#dbe3f0' }
       });
     }
 
@@ -7626,11 +8594,12 @@
       const chart = new google.visualization.BarChart(element);
       chart.draw(data, {
         legend: { position: 'none' },
-        chartArea: { left: 150, top: 24, width: '68%', height: '72%' },
-        colors: [color],
+        chartArea: { left: 156, top: 24, width: '66%', height: '74%' },
+        colors: [color || CHART_COLOR.sky],
         backgroundColor: 'transparent',
-        hAxis: { minValue: 0, textStyle: { fontName: 'Sarabun', fontSize: 11 } },
-        vAxis: { textStyle: { fontName: 'Sarabun', fontSize: 11 } }
+        bar: { groupWidth: '68%' },
+        hAxis: { minValue: 0, textStyle: CHART_TEXT_STYLE, gridlines: CHART_GRIDLINES, baselineColor: '#dbe3f0' },
+        vAxis: { textStyle: CHART_TEXT_STYLE, baselineColor: '#dbe3f0' }
       });
     }
 
@@ -7642,12 +8611,14 @@
       const chart = new google.visualization.AreaChart(element);
       chart.draw(data, {
         legend: { position: 'none' },
-        chartArea: { left: 70, top: 24, width: '78%', height: '68%' },
-        colors: [color],
-        areaOpacity: 0.18,
+        chartArea: { left: 74, top: 24, width: '78%', height: '66%' },
+        colors: [color || CHART_COLOR.sky],
+        areaOpacity: 0.22,
+        lineWidth: 3,
+        pointSize: 5,
         backgroundColor: 'transparent',
-        hAxis: { textStyle: { fontName: 'Sarabun', fontSize: 11 } },
-        vAxis: { minValue: 0, textStyle: { fontName: 'Sarabun', fontSize: 11 } }
+        hAxis: { textStyle: CHART_TEXT_STYLE, baselineColor: '#dbe3f0' },
+        vAxis: { minValue: 0, textStyle: CHART_TEXT_STYLE, gridlines: CHART_GRIDLINES, baselineColor: '#dbe3f0' }
       });
     }
 
@@ -7658,11 +8629,13 @@
       const data = google.visualization.arrayToDataTable([[label, 'มูลค่า']].concat(chartRows.length ? chartRows : [['ไม่มีข้อมูล', 1]]));
       const chart = new google.visualization.PieChart(element);
       chart.draw(data, {
-        pieHole: 0.48,
+        pieHole: 0.56,
         chartArea: { left: 12, top: 20, width: '92%', height: '78%' },
         backgroundColor: 'transparent',
-        legend: { position: 'right', textStyle: { fontName: 'Sarabun', fontSize: 11 } },
-        colors: ['#1f6f78', '#3f8f67', '#d99a27', '#d85f55', '#7b6bb0', '#6f8794']
+        pieSliceBorderColor: '#ffffff',
+        pieSliceTextStyle: { fontName: 'Noto Sans Thai', fontSize: 11, color: '#ffffff' },
+        legend: { position: 'right', textStyle: CHART_TEXT_STYLE },
+        colors: CHART_SERIES
       });
     }
 
@@ -7780,7 +8753,12 @@
         'executive-docx': createExecutiveDocx,
         'setup-system': setupSystem,
         'import-legacy': importLegacy,
-        'export-excel': exportExcel
+        'export-excel': exportExcel,
+        'open-google-sheet': openGoogleSheet,
+        'open-web-app': openWebApp,
+        'confirm-import-workbook': confirmImportWorkbook,
+        'cancel-import-workbook': cancelImportWorkbook,
+        'clear-imported-workbook': clearImportedWorkbook
       };
       if (actions[action]) actions[action]();
     }
